@@ -1,6 +1,10 @@
 ﻿using System;
 using System.IO;
+using System.Diagnostics;
+using System.Collections.Generic;
 using DataClasses;
+using System.Drawing;
+using System.Net.WebSockets;
 
 namespace RayTracer_in_CSharp
 {
@@ -8,57 +12,88 @@ namespace RayTracer_in_CSharp
     {
         static void Main()
         {
+            Console.WriteLine("Running...");
+            Stopwatch sw = new Stopwatch();
+
             #region Setup
+            string filePath = @".\rendered\image.ppm";
+
             // Create Camera to render
             Camera camera = new Camera(400, 225); ///400x225 resolution
-
-            // Create the PPM file and open it
-            StreamWriter w = new StreamWriter(@".\uwu.ppm");
-
-            // PPM header
-            w.Write("P3\n" + camera.ResolutionWidth + " " + camera.ResolutionHeight + "\n255\n");
 
             // camera setup
             camera.ViewportHeight = 2.0;
             camera.FocalLength = 1.0;
             camera.Origin = new Point3(0, 0, 0);
+
+            // create pixelbuffer
+            Color3[] pixels = new Color3[camera.ResolutionHeight * camera.ResolutionWidth];
+
+            // create sphere
+            HittableList world = new HittableList();
+            world.Add(new Sphere(0, 0, -1, 0.5));
+            world.Add(new Sphere(0, -100.5, -1, 100));
+
+
             #endregion
 
             #region Render
             // Render
-            for (int j = camera.ResolutionHeight - 1; j >= 0 ; --j)
+            sw.Start();
+            for (int j = camera.ResolutionHeight - 1; j >= 0; --j)
             {
-                // Announce progress
-                Console.Write("Scanlines remaining: {0}", j);
-                Console.CursorTop = 0;
-                Console.CursorLeft = 0;
-
                 for (int i = 0; i < camera.ResolutionWidth; ++i)
                 {
                     double u = (double)i / (camera.ResolutionWidth - 1);
                     double v = (double)j / (camera.ResolutionHeight - 1);
-                    Ray r = new Ray(camera.Origin, camera.LowerLeftCorner + u * camera.ViewportHorizontal + v * camera.ViewportVertical - camera.Origin);
-                    Color3 pixelColor = RayColor(r);
+                    Ray ray = new Ray(camera.Origin, camera.LowerLeftCorner + u * camera.ViewportHorizontal + v * camera.ViewportVertical - camera.Origin);
+                    Color3 pixelColor = BackgroundGradient(ray);
                     pixelColor = pixelColor * 255;
-                    w.WriteLine(pixelColor.R + " " + pixelColor.G + " " + pixelColor.B);
+
+                    // Render world
+                    HitRecord record;
+                    bool hit = world.Hit(ray, double.MinValue, double.MaxValue, out record);
+                    if (hit)
+                    {
+                        Vector3 normal = record.Normal;
+                        pixelColor = (Color3)((normal + new Vector3(1, 1, 1)) * 0.5); // scale it from 0 to 1
+                        pixelColor = pixelColor * 255;
+                    }
+
+                    pixels[j * camera.ResolutionWidth + i] = pixelColor;
                 }
             }
-
-
+            sw.Stop();
             #endregion
 
-            #region Cleanup
-            // Flush the stream to the drive and close the stream
+            #region Save to disk
+            // Create the PPM file and open it
+            StreamWriter w = new StreamWriter(filePath);
+
+            // PPM header
+            w.Write("P3\n" + camera.ResolutionWidth + " " + camera.ResolutionHeight + "\n255\n");
+
+            // Write pixels to stream
+            foreach (Color3 pixel in pixels)
+            {
+                w.WriteLine(pixel.R + " " + pixel.G + " " + pixel.B);
+            }
+
+            // Flush to drive and close the stream
             w.Flush();
             w.Close();
+            Console.WriteLine("Done. (Rendertime: {0} ms)", sw.ElapsedMilliseconds);
             #endregion
         }
+        static double DegreesToRadians(double degrees)
+        {
+            return degrees * Math.PI / 180.0;
+        }
 
-        static Color3 RayColor(Ray ray)
+        static Color3 BackgroundGradient(Ray ray)
         {
             double t = 0.5 * (ray.Direction.UnitVector.Y + 1.0);
             return (1.0 - t) * new Color3(1, 1, 1) + t * new Color3(0.5, 0.7, 1.0);
-
         }
 
 #pragma warning disable IDE0051 // Remove unused private members
@@ -74,6 +109,153 @@ namespace RayTracer_in_CSharp
         }
     }
 
+    struct HitRecord
+    {
+        /// <summary>
+        /// Point of intersection
+        /// </summary>
+        public Point3 Point { get; set; }
+
+        /// <summary>
+        /// Surface-Normal at point of intersection
+        /// </summary>
+        public Vector3 Normal { get; set; }
+
+        /// <summary>
+        /// Distance from ray-origin
+        /// </summary>
+        public double Distance { get; set; }
+
+        /// <summary>
+        /// Determines if the surface was hit from its front
+        /// </summary>
+        public bool HitFront { get; set; }
+    }
+
+    /// <summary>
+    /// An object that implements a hittable function
+    /// </summary>
+    interface IHittable
+    {
+        public bool Hit(Ray ray, double minDist, double maxDist, out HitRecord hitRecord);
+    }
+
+    /// <summary>
+    /// An object that implements a hittable function, as well as an origin
+    /// </summary>
+    interface IRenderObject : IHittable
+    {
+        public Point3 Origin { get; set; }
+    }
+
+    class HittableList : List<IHittable>, IHittable
+    {
+        public bool Hit(Ray ray, double minDist, double maxDist, out HitRecord hitRecord)
+        {
+            double closest = double.MaxValue;
+            bool hit = false;
+            hitRecord = new HitRecord();
+
+            for (int i = 0; i < this.Count; i++)
+            {
+                // create record and hit target
+                HitRecord currentRecord;
+                if(this[i].Hit(ray, minDist, maxDist, out currentRecord))
+                { // if hit
+                    hit = true;
+
+                    if(currentRecord.Distance < closest) // if it's closer than a previous hit
+                    {
+                        hitRecord = currentRecord; // then save it's record
+                    }
+                }
+                // else
+            }
+            return hit;
+        }
+    }
+
+    class Sphere : IRenderObject
+    {
+        #region Properties
+        public Point3 Origin { get; set; } = new Point3(0, 0, 0);
+        public double Radius { get; set; } = 1;
+        #endregion
+
+        #region Functions
+
+        #region Constructors
+        public Sphere()
+        {
+            return;
+        }
+
+        public Sphere(double radius)
+        {
+            this.Radius = radius;
+        }
+
+        public Sphere(double x, double y, double z)
+        {
+            this.Origin = new Point3(x, y, z);
+        }
+
+        public Sphere(double x, double y, double z, double radius)
+        {
+            this.Origin = new Point3(x, y, z);
+            this.Radius = radius;
+        }
+        #endregion
+
+        /// <summary>
+        /// Check if a ray hits the sphere
+        /// </summary>
+        /// <param name="ray"></param>
+        /// <returns></returns>
+        public bool Hit(Ray ray)
+        {
+            Vector3 oc = ray.Origin - (Vector3)this.Origin; // Ray Origin - Center of the Sphere = OC
+            double a = ray.Direction.LengthSquared;
+            double half_b = Vector3.Dot(oc, ray.Direction);
+            double c = oc.LengthSquared - Radius * Radius;
+            double discriminant = half_b * half_b - a * c;
+            return (discriminant > 0);
+        }
+
+        public bool Hit(Ray ray, double minDist, double maxDist, out HitRecord hitRecord)
+        {
+            hitRecord = new HitRecord();
+
+            Vector3 oc = ray.Origin - (Vector3)this.Origin; // Ray Origin - Center of the Sphere = OC
+            double a = ray.Direction.LengthSquared;
+            double half_b = Vector3.Dot(oc, ray.Direction);
+            double c = oc.LengthSquared - Radius * Radius;
+            double discriminant = half_b * half_b - a * c;
+
+            if(discriminant > 0)
+            {
+                double discRoot = Math.Sqrt(discriminant);
+
+
+                double temp1 = (-half_b - discRoot) / a;
+                double temp2 = (-half_b + discRoot) / a;
+                if (temp1 < maxDist && temp1 > minDist || temp2 < maxDist && temp2 > minDist)
+                {
+                    hitRecord.Distance = (temp1 < maxDist && temp1 > minDist) ? temp1 : temp2;
+                    hitRecord.Point = ray.PointAtDistance(hitRecord.Distance);
+
+                    // Calculate Surface Normal
+                    Vector3 outwardNormal = ((Vector3)hitRecord.Point - (Vector3)this.Origin) / this.Radius;
+                    bool frontFace = (Vector3.Dot(ray.Direction, outwardNormal) < 0); // check if it's the front face
+                    hitRecord.Normal = hitRecord.HitFront ? -outwardNormal : outwardNormal;
+                    return true;
+                }
+            }
+            return false;
+        }
+        #endregion
+    }
+
     class Camera
     {
         #region Properties
@@ -87,12 +269,12 @@ namespace RayTracer_in_CSharp
         /// </summary>
         public int ResolutionHeight { get; set; }
         /// <summary>
-        /// resolutionX / resolutionY
+        /// ResolutionWidth / Resolution Height
         /// </summary>
         public double AspectRatio {
             get
             {
-                return this.ResolutionWidth / this.ResolutionHeight;
+                return (double)this.ResolutionWidth / (double)this.ResolutionHeight;
             }
         }
         #endregion
@@ -110,10 +292,14 @@ namespace RayTracer_in_CSharp
             set
             {
                 _ViewportHeight = value;
-                ViewportWidth = this.AspectRatio * _ViewportHeight;
             }
         }
-        public double ViewportWidth { get; private set; }
+        public double ViewportWidth {
+            get
+            {
+                return this.AspectRatio * this.ViewportHeight;
+            }
+        }
         /// <summary>
         /// Gets the horizontal vector of the viewport
         /// </summary>
@@ -121,7 +307,7 @@ namespace RayTracer_in_CSharp
         {
             get
             {
-                return new Vector3(ViewportWidth, 0, 0);
+                return new Vector3(this.ViewportWidth, 0, 0);
             }
         }
         /// <summary>
@@ -131,7 +317,7 @@ namespace RayTracer_in_CSharp
         {
             get
             {
-                return new Vector3(0, ViewportHeight, 0);
+                return new Vector3(0, this.ViewportHeight, 0);
             }
         }
         /// <summary>
@@ -161,12 +347,14 @@ namespace RayTracer_in_CSharp
         #endregion
         #endregion
 
-        #region Function
+        #region Functions
         public Camera(int resolutionWidth, int resolutionHeight)
         {
             this.ResolutionWidth = resolutionWidth;
             this.ResolutionHeight = resolutionHeight;
+            this.ViewportHeight = 2;
         }
         #endregion
     }
 }
+

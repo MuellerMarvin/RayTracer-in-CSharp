@@ -193,11 +193,18 @@ namespace DataClasses
         /// </summary>
         public Vector3 UnitVector => (this / this.Length);
 
-        public double Dot(Vector3 targetVector)
+
+        /// <summary>
+        /// Dots two different Vectors with one another
+        /// </summary>
+        /// <param name="vector1">First vector to dot</param>
+        /// <param name="vector2">Second vector to dot with</param>
+        /// <returns></returns>
+        public static double Dot(Vector3 vector1, Vector3 vector2)
         {
-            return this.X * targetVector.X
-                 + this.Y * targetVector.Y
-                 + this.Z * targetVector.Z;
+            return vector1.X * vector2.X
+                 + vector1.Y * vector2.Y
+                 + vector1.Z * vector2.Z;
         }
 
         /// <summary>
@@ -340,7 +347,18 @@ namespace DataClasses
     {
         #region Properties
         public Point3 Origin { get; set; }
-        public Vector3 Direction { get; set; }
+        public Vector3 Direction
+        {
+            get
+            {
+                return _Direction;
+            }
+            set
+            {
+                _Direction = value.UnitVector;
+            }
+        }
+        private Vector3 _Direction;
         #endregion
 
         #region Functions
@@ -353,6 +371,11 @@ namespace DataClasses
         {
             this.Origin = origin;
             this.Direction = direction;
+        }
+
+        public Point3 PointAtDistance(double t)
+        {
+            return this.Origin + this.Direction * t;
         }
         #endregion
     }
