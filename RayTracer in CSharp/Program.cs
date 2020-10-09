@@ -20,62 +20,56 @@ namespace RayTracer_in_CSharp
             Stopwatch sw = new Stopwatch();
 
             #region Setup
+            #region Settings
             string filePath = @".\rendered\image";
+            #endregion
 
             // Create Camera to render
-            Camera camera = new Camera(400, 225); ///400x225 resolution
-
-            // camera setup
-            camera.ViewportHeight = 2.0;
-            camera.FocalLength = 1.0;
-            camera.Origin = new Point3(0, 0, 0);
-
-            // create pixelbuffer
-            Color3[] pixels = new Color3[camera.ResolutionHeight * camera.ResolutionWidth];
+            Camera camera = new Camera(1280, 720) ///400x225 resolution
+            {
+                ViewportHeight = 2.0,
+                FocalLength = 1.0,
+                Origin = new Point3(0, 0, 0),
+                TransparentBackground = false
+            };
 
             // create sphere
-            HittableList world = new HittableList();
-            world.Add(new Sphere(0, 0, -1, 0.5));
-            world.Add(new Sphere(0, -100.5, -1, 100));
-
-            #endregion
-
-            #region Render
-            // Render
-            sw.Start();
-            for (int y = 0; y < camera.ResolutionHeight; y++)
+            HittableList world = new HittableList
             {
-                for (int x = 0; x < camera.ResolutionWidth; x++)
-                {
-                    double u = (double)x / (camera.ResolutionWidth - 1);
-                    double v = (double)y / (camera.ResolutionHeight - 1);
+                new Sphere(0, -1, 0, 0.5),
+                new Sphere(0, -1, -100.5, 100)
+            };
 
-                    // Render world
-                    HitRecord record;
-                    Ray ray = new Ray(camera.Origin, camera.LowerLeftCorner + u * camera.ViewportHorizontal + v * camera.ViewportVertical);
-                    Color3 pixelColor = RayColor(ray, world);
-
-
-                    // write to buffer
-                    pixelColor = pixelColor * 255;
-                    pixels[y * camera.ResolutionWidth + x] = pixelColor;
-                }
-            }
-            sw.Stop();
             #endregion
 
-            #region Save to disk
-            // Save image to disk
-            filePath += ".png";
-            ImageFormat format = ImageFormat.Png;
-            WriteImage(filePath, pixels, camera.ResolutionHeight, camera.ResolutionWidth, format, true, sw.ElapsedMilliseconds);
+            for (int i = 0; i < 20; i++)
+            {
+                string pathChan = filePath;
+                #region Render
+                sw.Reset();
+                // Render
+                sw.Start();
+                RenderScene(camera, world, out Color4[] pixels);
+                sw.Stop();
+                #endregion
+
+                #region Save to disk
+                // Save image to disk
+                pathChan += i + ".png";
+                ImageFormat format = ImageFormat.Png;
+                WriteImage(pathChan, pixels, camera.ResolutionHeight, camera.ResolutionWidth, format, true, sw.ElapsedMilliseconds);
+                camera.Origin.X += 0.1;
+            }
+            return;
 
             // open image in the user's image editor
             #region because apparently System.Diagnostics.Process.Start() doesn't want to work anymore
-            var p = new Process();
-            p.StartInfo = new ProcessStartInfo(filePath)
+            var p = new Process
             {
-                UseShellExecute = true
+                StartInfo = new ProcessStartInfo(filePath)
+                {
+                    UseShellExecute = true
+                }
             };
             p.Start();
             #endregion
@@ -85,42 +79,70 @@ namespace RayTracer_in_CSharp
             #endregion
         }
 
-        static Color3 RayColor(Ray ray, IHittable hittable)
+        static void RenderScene(Camera camera, IHittable hittableObjects, out Color4[] pixelBuffer)
         {
-            HitRecord hitRecord;
-            if (hittable.Hit(ray, 0, double.PositiveInfinity, out hitRecord))
+            // set up buffer
+            pixelBuffer = new Color4[camera.ResolutionHeight * camera.ResolutionWidth];
+
+            for (int j = camera.ResolutionHeight - 1; j >= 0; --j)
             {
-                return 0.5 * ((Color3)hitRecord.Normal + new Color3(1, 1, 1));
+                for (int i = 0; i < camera.ResolutionWidth; ++i)
+                {
+                    Color4 pixelColor = new Color4(0, 0, 0, 0);
+                    double u = (double)i / (camera.ResolutionWidth - 1);
+                    double v = (double)j / (camera.ResolutionHeight - 1);
+
+                    // Render world
+                    Ray ray = new Ray(camera.Origin, camera.LowerLeftCorner + u * camera.ViewportHorizontal + v * camera.ViewportVertical);
+
+                    if (hittableObjects.Hit(ray, 0, double.PositiveInfinity, out HitRecord hitRecord))
+                    {
+                        pixelColor = 0.5 * ((Color3)hitRecord.Normal + new Color4(1, 1, 1, 1));
+                        pixelColor.A = 1;
+                        double temp = pixelColor.B;
+                        pixelColor.B = pixelColor.G;
+                        pixelColor.G = temp;
+                    }
+                    else if (!camera.TransparentBackground)
+                    {
+                        // draw a background
+                        double zPos = 0.5 * (ray.Direction.UnitVector.Z + 1);
+                        pixelColor = (1 - zPos) * new Color3(1, 1, 1) + zPos * new Color4(0.5, 0.7, 1.0, 1);
+                        pixelColor.A = 1;
+                    }
+
+
+                    // write to buffer
+                    pixelColor *= 255;
+                    pixelBuffer[j * camera.ResolutionWidth + i] = pixelColor;
+                }
             }
-            double t = 0.5 * (ray.Direction.UnitVector.Y + 1);
-            return (1 - t) * new Color3(1, 1, 1) + t * new Color3(0.5, 0.7, 1.0);
         }
 
-        static void WriteImage(string filePath, Color3[] pixels, int height, int width, ImageFormat format, bool writeDebugInfo, long frameTime)
+        static void WriteImage(string filePath, Color4[] pixels, int height, int width, ImageFormat format, bool writeDebugInfo, long frameTime)
         {
             Bitmap bitmap;
             if(writeDebugInfo)
             {
-                bitmap = new Bitmap(width, height + 20, PixelFormat.Format24bppRgb);
+                bitmap = new Bitmap(width, height + 20, PixelFormat.Format32bppArgb);
             }
             else
             {
-                bitmap = new Bitmap(width, height, PixelFormat.Format24bppRgb);
+                bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
             }
 
-            for (int y = 0; y < height; y++)
+            for (int y = height - 1; y >= 0; y--)
             {
                 for (int x = 0; x < width; x++)
                 {
-                    Color3 color3 = pixels[y * width + x];
-                    bitmap.SetPixel(x, y, Color.FromArgb((int)color3.R, (int)color3.G, (int)color3.B));
+                    Color4 color4 = pixels[y * width + x];
+                    bitmap.SetPixel(x, y, Color.FromArgb((int) color4.A, (int)color4.R, (int)color4.G, (int)color4.B));
                 }
             }
 
             if(writeDebugInfo)
             {
-                string debugString = string.Empty;
-                debugString = "Frametime: " + frameTime + " ms";
+                string debugString = "Frametime: " + frameTime + " ms";
                 debugString += " | Resolution: " + width + "x" + height + " (" + width * height + " pixels)";
 
                 Graphics g = Graphics.FromImage(bitmap);
@@ -130,7 +152,7 @@ namespace RayTracer_in_CSharp
             bitmap.Save(filePath, format);
         }
 
-        static double DegreesToRadians(double degrees)
+        public static double DegreesToRadians(double degrees)
         {
             return degrees * Math.PI / 180.0;
         }

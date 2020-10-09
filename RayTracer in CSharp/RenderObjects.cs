@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using DataClasses;
 
 namespace RenderObjects
@@ -47,21 +48,21 @@ namespace RenderObjects
     {
         public bool Hit(Ray ray, double minDist, double maxDist, out HitRecord hitRecord)
         {
+            hitRecord = new HitRecord();
             double closest = double.MaxValue;
             bool hit = false;
-            hitRecord = new HitRecord();
 
             for (int i = 0; i < this.Count; i++)
             {
                 // create record and hit target
-                HitRecord currentRecord;
-                if (this[i].Hit(ray, minDist, maxDist, out currentRecord))
+                if (this[i].Hit(ray, minDist, maxDist, out HitRecord currentRecord))
                 { // if hit
                     hit = true;
-
+                     
                     if (currentRecord.Distance < closest) // if it's closer than a previous hit
                     {
                         hitRecord = currentRecord; // then save it's record
+                        closest = currentRecord.Distance;
                     }
                 }
                 // else
@@ -129,19 +130,29 @@ namespace RenderObjects
 
             if (discriminant > 0)
             {
-                double discRoot = Math.Sqrt(discriminant);
-
-
-                double temp1 = (-half_b - discRoot) / a;
-                double temp2 = (-half_b + discRoot) / a;
-                if (temp1 < maxDist && temp1 > minDist || temp2 < maxDist && temp2 > minDist)
+                double root = Math.Sqrt(discriminant);
+                double temp = (-half_b - root) / a;
+                if (temp < maxDist && temp > minDist)
                 {
-                    hitRecord.Distance = (temp1 < maxDist && temp1 > minDist) ? temp1 : temp2;
+                    hitRecord.Distance = temp;
                     hitRecord.Point = ray.PointAtDistance(hitRecord.Distance);
+                    Vector3 outwardNormal = ((Vector3)hitRecord.Point - this.Origin) / this.Radius;
 
-                    // Calculate Surface Normal
-                    Vector3 outwardNormal = ((Vector3)hitRecord.Point - (Vector3)this.Origin) / this.Radius;
-                    hitRecord.HitFront = (Vector3.Dot(ray.Direction, outwardNormal) < 0); // check if it's the front face
+                    // determine if ray faces normal
+                    hitRecord.HitFront = Vector3.Dot(ray.Direction, outwardNormal) < 0;
+                    hitRecord.Normal = hitRecord.HitFront ? outwardNormal : -outwardNormal;
+
+                    return true;
+                }
+                temp = (-half_b + root) / a;
+                if (temp < maxDist && temp > minDist)
+                {
+                    hitRecord.Distance = temp;
+                    hitRecord.Point = ray.PointAtDistance(hitRecord.Distance);
+                    Vector3 outwardNormal = ((Vector3)hitRecord.Point - this.Origin) / this.Radius;
+
+                    // determine if ray faces normal
+                    hitRecord.HitFront = Vector3.Dot(ray.Direction, outwardNormal) < 0;
                     hitRecord.Normal = hitRecord.HitFront ? outwardNormal : -outwardNormal;
                     return true;
                 }
@@ -214,7 +225,7 @@ namespace RenderObjects
         {
             get
             {
-                return new Vector3(0, this.ViewportHeight, 0);
+                return new Vector3(0, 0, this.ViewportHeight);
             }
         }
         /// <summary>
@@ -224,7 +235,7 @@ namespace RenderObjects
         {
             get
             {
-                return this.Origin - (ViewportHorizontal / 2) - (ViewportVertical / 2) - (new Vector3(0, 0, this.FocalLength));
+                return this.Origin - (ViewportHorizontal / 2) - (ViewportVertical / 2) - (new Vector3(0, this.FocalLength, 0));
             }
         }
 
@@ -242,6 +253,9 @@ namespace RenderObjects
         #region Holder Variables
         private double _ViewportHeight = 2;
         #endregion
+        #region Render Config
+        public bool TransparentBackground { get; set; }
+        #endregion
         #endregion
 
         #region Functions
@@ -254,3 +268,4 @@ namespace RenderObjects
         #endregion
     }
 }
+ 
