@@ -68,7 +68,7 @@ namespace RayTracer_in_CSharp
             // Save image to disk
             filePath += ".png";
             ImageFormat format = ImageFormat.Png;
-            WriteImageJpg(filePath, pixels, camera.ResolutionHeight, camera.ResolutionWidth, format, true, sw.ElapsedMilliseconds);
+            WriteImage(filePath, pixels, camera.ResolutionHeight, camera.ResolutionWidth, format, true, sw.ElapsedMilliseconds);
 
             // open image in the user's image editor
             #region because apparently System.Diagnostics.Process.Start() doesn't want to work anymore
@@ -96,7 +96,7 @@ namespace RayTracer_in_CSharp
             return (1 - t) * new Color3(1, 1, 1) + t * new Color3(0.5, 0.7, 1.0);
         }
 
-        static void WriteImageJpg(string filePath, Color3[] pixels, int height, int width, ImageFormat format, bool writeDebugInfo, long frameTime)
+        static void WriteImage(string filePath, Color3[] pixels, int height, int width, ImageFormat format, bool writeDebugInfo, long frameTime)
         {
             Bitmap bitmap;
             if(writeDebugInfo)
