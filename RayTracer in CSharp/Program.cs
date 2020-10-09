@@ -134,24 +134,6 @@ namespace RayTracer_in_CSharp
         {
             return degrees * Math.PI / 180.0;
         }
-
-        static Color3 BackgroundGradient(Ray ray)
-        {
-            double t = 0.5 * (ray.Direction.UnitVector.Y + 1.0);
-            return (1.0 - t) * new Color3(1, 1, 1) + t * new Color3(0.5, 0.7, 1.0);
-        }
-
-#pragma warning disable IDE0051 // Remove unused private members
-        static void WriteColor(Color3 color)
-#pragma warning restore IDE0051 // Remove unused private members
-        {
-            Console.WriteLine(ColorToPpmLine(color));
-        }
-
-        static string ColorToPpmLine(Color3 color)
-        {
-            return (color.R * 255.999) + " " + (color.G * 255.999) + " " + (color.B * 255.999);
-        }
     }
 }
 
