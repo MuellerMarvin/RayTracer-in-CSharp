@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DataClasses
+namespace Raytracing
 {
     public class Point3
     {
@@ -212,11 +212,11 @@ namespace DataClasses
         /// </summary>
         /// <param name="targetVector"></param>
         /// <returns></returns>
-        public Vector3 Cross(Vector3 targetVector)
+        public static Vector3 Cross(Vector3 vector1, Vector3 vector2)
         {
-            return new Vector3(this.Y * targetVector.Z - this.Z * targetVector.Y,
-                               this.Z * targetVector.X - this.X * targetVector.Z,
-                               this.X * targetVector.Y - this.Y * targetVector.X);
+            return new Vector3(vector1.Y * vector2.Z - vector1.Z * vector2.Y,
+                               vector1.Z * vector2.X - vector1.X * vector2.Z,
+                               vector1.X * vector2.Y - vector1.Y * vector2.X);
         }
         #endregion
 
@@ -336,10 +336,16 @@ namespace DataClasses
             return new Color4(color.R * multiplier, color.G * multiplier, color.B * multiplier, color.A * multiplier);
         }
 
+        public static Color4 operator /(Color4 color, double divident)
+        {
+            return new Color4(color.R / divident, color.G / divident, color.B / divident, color.A / divident);
+        }
+
         public static Color4 operator +(Color4 color1, Color4 color2)
         {
             return new Color4(color1.R + color2.R, color1.G + color2.G, color1.B + color2.B, color1.A + color2.A);
         }
+
         #endregion
 
         #region Conversion
