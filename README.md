@@ -5,7 +5,7 @@
 
 An implementation of a simple Raytracer in C#, loosely following the guidance of http://raytracing.github.io.
 
-# Where to try it easily ?
+# Want to try it out ?
 
 There is a simple demo that can be found in the releases section:
 https://github.com/MuellerMarvin/RayTracer-in-CSharp/releases/tag/0.0.1
