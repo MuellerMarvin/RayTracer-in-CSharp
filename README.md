@@ -1,0 +1,17 @@
+# RayTracer-in-CSharp
+
+An implementation of a simple Raytracer.
+
+# How to compile ?
+
+The repo consists of a VS2019 Solution that runs best with .NET 5 installed.
+Just open it and given you have selected .NET 5 in the installer it should compile by itself.
+
+# What can it do ?
+
+It can render simple spheres with a diffuse shader.
+
+# Will there be more modes ?
+
+Yes. I'll be working on reflective surfaces and an implementation of materials as well as rendering of polygon-based models, not just simple spheres.
+
