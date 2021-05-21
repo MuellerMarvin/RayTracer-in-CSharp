@@ -1,4 +1,7 @@
+
 # RayTracer-in-CSharp
+
+![spheres](https://user-images.githubusercontent.com/8641639/119091756-d53fc700-ba0d-11eb-9301-0f7935d6b4f4.gif)
 
 An implementation of a simple Raytracer.
 
