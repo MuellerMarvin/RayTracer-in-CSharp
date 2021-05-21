@@ -2,6 +2,11 @@
 
 An implementation of a simple Raytracer.
 
+# Where to try it easily ?
+
+There is a simple demo that can be found in the releases section:
+https://github.com/MuellerMarvin/RayTracer-in-CSharp/releases/tag/0.0.1
+
 # How to compile ?
 
 The repo consists of a VS2019 Solution that runs best with .NET 5 installed.
