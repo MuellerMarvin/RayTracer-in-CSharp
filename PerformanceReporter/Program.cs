@@ -1,5 +1,6 @@
 ﻿using System;
 using Raytracing;
+using Raytracing.DataStructures;
 
 namespace PerformanceReporter
 {

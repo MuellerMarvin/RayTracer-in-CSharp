@@ -6,6 +6,8 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 
+using Raytracing.DataStructures;
+
 namespace Raytracing
 {
     public class Raytracer
