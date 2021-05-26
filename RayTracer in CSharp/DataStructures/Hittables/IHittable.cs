@@ -1,6 +1,6 @@
 ﻿using Raytracing.DataStructures;
 
-namespace Raytracing.Scene.Hittables
+namespace Raytracing.Hittables
 {
     /// <summary>
     /// An object that implements a hittable function

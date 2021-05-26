@@ -7,7 +7,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 
 using Raytracing.DataStructures;
-using Raytracing.Scene.Hittables;
+using Raytracing.Hittables;
 
 namespace Raytracing
 {
@@ -28,37 +28,10 @@ namespace Raytracing
         #endregion
 
         #region Constructors
-        #region pass by value
         public Raytracer()
         {
             this.HittableObjects = new HittableList();
         }
-
-        public Raytracer(Camera camera)
-        {
-            camera = camera;
-            this.HittableObjects = new HittableList();
-        }
-
-        public Raytracer(Camera camera, HittableList hittableObjects)
-        {
-            camera = camera;
-            this.HittableObjects = hittableObjects;
-        }
-        #endregion
-        #region pass by reference
-        public Raytracer(ref Camera camera)
-        {
-            camera = camera;
-            this.HittableObjects = new HittableList();
-        }
-
-        public Raytracer(ref Camera camera, ref HittableList hittableObjects)
-        {
-            camera = camera;
-            this.HittableObjects = hittableObjects;
-        }
-        #endregion
         #endregion
 
         #region Functions

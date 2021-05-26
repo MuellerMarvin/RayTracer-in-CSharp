@@ -2,7 +2,7 @@
 using Raytracing.DataStructures;
 
 
-namespace Raytracing.Scene.Hittables
+namespace Raytracing.Hittables
 {
     public class HittableList : List<IHittable>, IHittable
     {

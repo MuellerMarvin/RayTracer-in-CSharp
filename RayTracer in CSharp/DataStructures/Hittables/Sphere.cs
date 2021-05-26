@@ -1,9 +1,9 @@
 ﻿using System;
 using Raytracing.DataStructures;
 
-namespace Raytracing.Scene.Hittables
+namespace Raytracing.Hittables
 {
-    public class Sphere : IRenderObject
+    public class Sphere : IHittable
     {
         #region Properties
         public Point3 Origin { get; set; }

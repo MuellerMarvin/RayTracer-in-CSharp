@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Drawing.Imaging;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using Raytracing;
 using Raytracing.DataStructures;
+using Raytracing.Hittables;
 
 
 namespace RayTracerConsole
