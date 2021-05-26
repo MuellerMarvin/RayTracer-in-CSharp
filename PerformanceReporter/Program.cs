@@ -26,7 +26,7 @@ namespace PerformanceReporter
             Camera camera = new Camera(xRes, yRes)
             {
                 Origin = new Vector3(-1, 0, 0),
-                MultithreadedRendering = false,
+                MultithreadedRendering = true,
                 SamplesPerPixel = 100,
                 MaxBounces = 12
             };
