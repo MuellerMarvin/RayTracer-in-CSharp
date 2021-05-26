@@ -1,6 +1,7 @@
 ﻿using System;
 using Raytracing;
 using Raytracing.DataStructures;
+using Raytracing.Scene.Hittables;
 
 namespace PerformanceReporter
 {
