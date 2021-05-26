@@ -2,7 +2,7 @@
 
 namespace Raytracing
 {
-    public class Point3
+    public struct Point3
     {
         #region Properties
         public double X { get; set; }
@@ -34,7 +34,7 @@ namespace Raytracing
         #endregion
     }
 
-    public class Vector3
+    public struct Vector3
     {
         #region Properties
         public double X { get; set; }
@@ -254,7 +254,7 @@ namespace Raytracing
         #endregion
     }
 
-    public class Color3
+    public struct Color3
     {
         #region Properties
         public double R { get; set; }
@@ -306,7 +306,7 @@ namespace Raytracing
         #endregion
     }
 
-    public class Color4
+    public struct Color4
     {
         #region Properties
         public double R { get; set; }
@@ -366,7 +366,7 @@ namespace Raytracing
         #endregion
     }
 
-    public class Ray
+    public struct Ray
     {
         #region Properties
         public Point3 Origin { get; set; }
@@ -392,8 +392,8 @@ namespace Raytracing
         /// <param name="direction"></param>
         public Ray(Point3 origin, Vector3 direction)
         {
-            this.Origin = origin;
-            this.Direction = direction;
+            Origin = origin;
+            _Direction = direction.UnitVector;
         }
 
         public Point3 PointAtDistance(double t)
