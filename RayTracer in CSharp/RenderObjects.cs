@@ -359,8 +359,8 @@ namespace Raytracing
     public class Sphere : IRenderObject
     {
         #region Properties
-        public Point3 Origin { get; set; } = new Point3(0, 0, 0);
-        public double Radius { get; set; } = 1;
+        public Point3 Origin { get; set; }
+        public double Radius { get; set; }
         #endregion
 
         #region Functions
@@ -368,17 +368,20 @@ namespace Raytracing
         #region Constructors
         public Sphere()
         {
-            return;
+            this.Origin = new Vector3(0, 0, 0);
+            this.Radius = 1;
         }
 
         public Sphere(double radius)
         {
+            this.Origin = new Vector3(0, 0, 0);
             this.Radius = radius;
         }
 
         public Sphere(double x, double y, double z)
         {
             this.Origin = new Point3(x, y, z);
+            this.Radius = 1;
         }
 
         public Sphere(double x, double y, double z, double radius)
