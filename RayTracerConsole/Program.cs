@@ -13,7 +13,7 @@ namespace RayTracerConsole
         {
             bool writeDebugInfo = false;
 
-            Raytracer renderer = new Raytracer
+            Renderer renderer = new Renderer
             {
                 // Define objects in the scene
                 HittableObjects = new HittableList

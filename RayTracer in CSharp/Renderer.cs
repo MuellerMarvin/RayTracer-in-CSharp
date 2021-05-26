@@ -11,7 +11,7 @@ using Raytracing.Hittables;
 
 namespace Raytracing
 {
-    public class Raytracer
+    public class Renderer
     {
         #region Variables
         #region Properties
@@ -28,7 +28,7 @@ namespace Raytracing
         #endregion
 
         #region Constructors
-        public Raytracer()
+        public Renderer()
         {
             this.HittableObjects = new HittableList();
         }

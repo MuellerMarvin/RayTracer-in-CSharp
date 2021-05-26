@@ -9,7 +9,7 @@ namespace PerformanceReporter
     {
         static void Main(string[] args)
         {
-            Raytracer raytracer = new Raytracer();
+            Renderer raytracer = new Renderer();
 
             int xRes = 720;
             int yRes = 480;
