@@ -1,6 +1,9 @@
 ﻿using Raytracing.DataStructures;
 
-public interface IMaterial
+namespace Raytracing.Materials
 {
-    public bool Scatter(Ray rayIn, HitRecord hitRecord, Color3 colorAttenuation, Ray scatteredRay);
+    public interface IMaterial
+    {
+        public bool Scatter(Ray rayIn, HitRecord hitRecord, Color3 colorAttenuation, Ray scatteredRay);
+    }
 }
