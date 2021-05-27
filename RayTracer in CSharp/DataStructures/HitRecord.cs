@@ -21,5 +21,10 @@
         /// Determines if the surface was hit from its front
         /// </summary>
         public bool HitFront { get; set; }
+
+        /// <summary>
+        /// Determines how the surfacee interacts with rays
+        /// </summary>
+        public IMaterial Material { get; set; }
     }
 }
