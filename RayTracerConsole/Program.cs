@@ -18,9 +18,9 @@ namespace RayTracerConsole
                 // Define objects in the scene
                 HittableObjects = new HittableList
                 {
-                    new Sphere(0, 1, 0, 0.5),
-                    new Sphere(0.5, 1, 0, 0.5),
-                    new Sphere(0, 1, -100.5, 100)
+                    new Sphere(0, 1, 0, 0.5, null),
+                    new Sphere(0.5, 1, 0, 0.5, null),
+                    new Sphere(0, 1, -100.5, 100, null)
                 }
             };
 
