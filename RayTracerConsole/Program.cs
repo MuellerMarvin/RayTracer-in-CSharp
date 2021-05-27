@@ -47,7 +47,9 @@ namespace RayTracerConsole
 
                 // provide a status
                 Console.CursorLeft = 0;
-                Console.Write("{0} out of {1} completed. ({2} %) {3}", i, frames, Math.Round((float)(i) / ((float)frames / 100)), timeRemaining);
+                Console.CursorTop = 1;
+                int percentage = (int)Math.Round((float)(i) / ((float)frames / 100f));
+                Console.Write("{0} out of {1} completed. ({2} %) {3}\n{4}", i, frames, percentage, timeRemaining, GetProgressBar(50, percentage));
 
                 // define camera + changes to it
                 Camera localCam = new Camera(camera.ResolutionWidth, camera.ResolutionHeight)
@@ -79,6 +81,12 @@ namespace RayTracerConsole
             Console.Clear();
             Console.WriteLine("Done.");
             Console.ReadKey();
+        }
+
+        static string GetProgressBar(int segments, double currentPercentage)
+        {
+            int completedSegments = (int)(currentPercentage / (100d / (double)segments));
+            return '[' + new string('#', completedSegments) + new string('-', segments - completedSegments) + ']';
         }
     }
 
