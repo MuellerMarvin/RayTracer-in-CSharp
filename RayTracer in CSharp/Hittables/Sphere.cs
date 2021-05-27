@@ -63,6 +63,8 @@ namespace Raytracing.Hittables
         public bool Hit(Ray ray, double minDist, double maxDist, out HitRecord hitRecord)
         {
             hitRecord = new HitRecord();
+            hitRecord.Material = this.Material;
+
             Vector3 oc = ray.Origin - (Vector3)this.Origin; // Ray Origin - Center of the Sphere = OC
             double a = ray.Direction.LengthSquared;
             double half_b = Vector3.Dot(oc, ray.Direction);
@@ -73,8 +75,6 @@ namespace Raytracing.Hittables
             {
                 double root = Math.Sqrt(discriminant);
                 double temp = (-half_b - root) / a;
-
-                hitRecord.Material = this.Material;
 
                 if (temp < maxDist && temp > minDist)
                 {
