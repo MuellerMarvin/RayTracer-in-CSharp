@@ -21,6 +21,14 @@ namespace Raytracing.DataStructures
             this.B = b;
             this.A = a;
         }
+
+        public Color4(Color3 color, double a)
+        {
+            this.R = color.R;
+            this.G = color.G;
+            this.B = color.B;
+            this.A = a;
+        }
         #endregion
 
         #region Operators
