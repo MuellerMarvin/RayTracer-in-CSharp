@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,6 +7,11 @@ namespace Raytracing.DataStructures
 {
     public struct Vector3
     {
+        #region Static Values
+        //private static readonly Random RandomGen = new Random();
+        private static ThreadLocal<Random> RandomGen = new ThreadLocal<Random>(() => new Random(Guid.NewGuid().GetHashCode()));
+        #endregion
+
         #region Properties
         public double X { get; set; }
         public double Y { get; set; }
@@ -188,6 +194,39 @@ namespace Raytracing.DataStructures
                                vector1.Z * vector2.X - vector1.X * vector2.Z,
                                vector1.X * vector2.Y - vector1.Y * vector2.X);
         }
+
+        #region Randomness
+        public static Vector3 GetRandomVector()
+        {
+            return new Vector3(RandomGen.Value.NextDouble() * 2 - 1, RandomGen.Value.NextDouble() * 2 - 1, RandomGen.Value.NextDouble() * 2 - 1);
+        }
+
+        public static Vector3 GetRandomUnitVector()
+        {
+            while (true)
+            {
+                Vector3 vector = new Vector3(RandomGen.Value.NextDouble(), RandomGen.Value.NextDouble(), RandomGen.Value.NextDouble());
+                if (vector.LengthSquared >= 1) continue; // continue if not in the sphere
+                return vector; // else
+            }
+        }
+
+        public static Vector3 GetRandomInUnitSphere()
+        {
+            while (true)
+            {
+                // create random vector
+                Vector3 vector = GetRandomVector();
+
+                // if it's length isn't on the sphere, reject it
+                if (vector.LengthSquared >= 1)
+                    continue;
+                // else return it
+                return vector;
+            }
+        }
+        #endregion
+
         #endregion
 
         #region Conversion
