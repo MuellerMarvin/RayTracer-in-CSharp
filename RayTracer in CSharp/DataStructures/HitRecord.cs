@@ -1,4 +1,6 @@
-﻿namespace Raytracing.DataStructures
+﻿using Raytracing.Materials;
+
+namespace Raytracing.DataStructures
 {
     public struct HitRecord
     {

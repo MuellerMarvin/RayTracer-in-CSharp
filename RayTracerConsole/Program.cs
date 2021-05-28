@@ -3,6 +3,7 @@ using System.Drawing.Imaging;
 using Raytracing;
 using Raytracing.DataStructures;
 using Raytracing.Hittables;
+using Raytracing.Materials;
 
 
 namespace RayTracerConsole

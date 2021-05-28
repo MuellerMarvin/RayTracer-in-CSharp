@@ -1,5 +1,6 @@
 ﻿using System;
 using Raytracing.DataStructures;
+using Raytracing.Materials;
 
 namespace Raytracing.Hittables
 {
