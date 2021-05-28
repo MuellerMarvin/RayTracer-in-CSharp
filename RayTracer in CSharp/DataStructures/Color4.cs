@@ -42,6 +42,11 @@ namespace Raytracing.DataStructures
             return new Color4(color.R * multiplier, color.G * multiplier, color.B * multiplier, color.A * multiplier);
         }
 
+        public static Color4 operator *(Color4 color1, Color4 color2)
+        {
+            return new Color4(color1.R * color2.R, color1.G * color2.G, color1.B * color2.B, color1.A * color2.A);
+        }
+
         public static Color4 operator /(Color4 color, double divident)
         {
             return new Color4(color.R / divident, color.G / divident, color.B / divident, color.A / divident);
