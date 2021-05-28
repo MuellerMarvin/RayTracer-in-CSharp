@@ -2,7 +2,7 @@
 
 namespace Raytracing.Materials
 {
-    class LambertianDiffuse : IMaterial
+    public class LambertianDiffuse : IMaterial
     {
         #region Properties
         public Color3 Albedo;
