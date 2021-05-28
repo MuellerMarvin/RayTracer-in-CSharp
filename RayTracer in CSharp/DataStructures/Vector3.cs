@@ -16,6 +16,14 @@ namespace Raytracing.DataStructures
         public double X { get; set; }
         public double Y { get; set; }
         public double Z { get; set; }
+        public bool isNearZero
+        {
+            get
+            {
+                const double s = 1e-8;
+                return (this.X < s) && (this.Y < s) && (this.Z < s);
+            }
+        }
         #endregion
 
         #region Constructors
