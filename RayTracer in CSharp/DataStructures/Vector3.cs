@@ -195,6 +195,15 @@ namespace Raytracing.DataStructures
                                vector1.X * vector2.Y - vector1.Y * vector2.X);
         }
 
+        /// <summary>
+        /// Reflects the input ray from a surface with a specific normal
+        /// </summary>
+        /// <returns></returns>
+        public static Vector3 Reflect(Vector3 vector, Vector3 normal)
+        {
+            return vector - 2 * Vector3.Dot(vector, normal) * normal;
+        }
+
         #region Randomness
         public static Vector3 GetRandomVector()
         {
