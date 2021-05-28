@@ -186,7 +186,7 @@ namespace Raytracing
             Color4 pixelColor = new Color4(0, 0, 0, 0);
             if (hittableObjects.Hit(ray, 0.001, double.PositiveInfinity, out HitRecord hitRecord))
             {
-                Vector3 target = (Vector3)hitRecord.Point + hitRecord.Normal + GetRandomInUnitSphere();
+                Vector3 target = (Vector3)hitRecord.Point + hitRecord.Normal + Vector3.GetRandomInUnitSphere();
                 pixelColor = 0.5 * GetRayColor(new Ray(hitRecord.Point, target - (Vector3)hitRecord.Point), hittableObjects, false, maxBounces - 1);
                 pixelColor.A = 1;
             }
@@ -244,36 +244,6 @@ namespace Raytracing
         {
             double scaled = minScaled + (maxScaled - minScaled) * ((value - min) / (max - min));
             return scaled;
-        }
-
-        private Vector3 GetRandomVector()
-        {
-            return new Vector3(RanGen.Value.NextDouble() * 2 - 1, RanGen.Value.NextDouble() * 2 - 1, RanGen.Value.NextDouble() * 2 - 1);
-        }
-
-        private Vector3 GetRandomUnitVector()
-        {
-            while (true)
-            {
-                Vector3 vector = new Vector3(RanGen.Value.NextDouble(), RanGen.Value.NextDouble(), RanGen.Value.NextDouble());
-                if (vector.LengthSquared >= 1) continue; // continue if not in the sphere
-                return vector; // else
-            }
-        }
-
-        private Vector3 GetRandomInUnitSphere()
-        {
-            while(true)
-            {
-                // create random vector
-                Vector3 vector = GetRandomVector();
-
-                // if it's length isn't on the sphere, reject it
-                if (vector.LengthSquared >= 1)
-                    continue;
-                // else return it
-                return vector;
-            }
         }
 
         private double DegreesToRadians(double degrees)
