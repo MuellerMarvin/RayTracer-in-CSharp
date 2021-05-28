@@ -14,14 +14,20 @@ namespace RayTracerConsole
         {
             bool writeDebugInfo = false;
 
+            LambertianDiffuse cyan = new LambertianDiffuse(new Color3(0, 0.88, 0.88));
+            LambertianDiffuse gray = new LambertianDiffuse(new Color3(0.5, 0.5, 0.5));
+            LambertianDiffuse red = new LambertianDiffuse(new Color3(0.8, 0.2, 0.2));
+            LambertianDiffuse green = new LambertianDiffuse(new Color3(0.2, 0.55, 0.2));
+
             Renderer renderer = new Renderer
             {
                 // Define objects in the scene
                 HittableObjects = new HittableList
                 {
-                    new Sphere(0, 1, 0, 0.5, null),
-                    new Sphere(0.5, 1, 0, 0.5, null),
-                    new Sphere(0, 1, -100.5, 100, null)
+                    new Sphere(0, 1, 0, 0.5, gray),
+                    new Sphere(1, 1, 0, 0.5, red),
+                    new Sphere(0, 1, -100.5, 100, green),
+                    new Sphere(0, -2, 0, 1, cyan)
                 }
             };
 
