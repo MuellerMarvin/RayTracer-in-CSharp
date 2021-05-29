@@ -31,5 +31,6 @@ A standard diffuse material.
 ### Normal Reflector ###
 An unrealistic that reflects every ray towards the surface-normal.
 This results in a material where every point has the color of what it would 'see' from that perspective.
+
 ![ezgif-1-81741423ce70](https://user-images.githubusercontent.com/8641639/120057676-46523080-c045-11eb-96b2-696f461b3bc4.gif)
 (Only the left sphere has the material, the others are Lambertian Diffusive)
