@@ -19,7 +19,7 @@ namespace RayTracerConsole
             IMaterial red = new LambertianDiffuse(new Color3(0.8, 0.2, 0.2));
             IMaterial green = new LambertianDiffuse(new Color3(0.2, 0.55, 0.2));
 
-            Renderer renderer = new Renderer
+            Renderer renderer = new()
             {
                 // Define objects in the scene
                 HittableObjects = new HittableList
@@ -32,7 +32,7 @@ namespace RayTracerConsole
             };
 
             // Define the camera
-            Camera camera = new Camera(720, 480)
+            Camera camera = new(720, 480)
             {
                 Origin = new Vector3(-1, 0, 0),
                 MultithreadedRendering = true,
@@ -59,7 +59,7 @@ namespace RayTracerConsole
                 Console.Write("{0} out of {1} completed. ({2} %) {3}\n{4}", i, frames, percentage, timeRemaining, GetProgressBar(50, percentage));
 
                 // define camera + changes to it
-                Camera localCam = new Camera(camera.ResolutionWidth, camera.ResolutionHeight)
+                Camera localCam = new(camera.ResolutionWidth, camera.ResolutionHeight)
                 {
                     Origin = camera.Origin + new Vector3(0.01f * i, 0, 0),
                     MultithreadedRendering = camera.MultithreadedRendering,
@@ -67,7 +67,7 @@ namespace RayTracerConsole
                     MaxBounces = camera.MaxBounces
                 };
 
-                RenderResult result = new RenderResult()
+                RenderResult result = new()
                 {
                     frameNumber = i,
                     camera = localCam
