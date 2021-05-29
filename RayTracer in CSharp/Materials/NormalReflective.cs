@@ -2,11 +2,11 @@
 
 namespace Raytracing.Materials
 {
-    public class NormalReflector : IMaterial
+    public class NormalReflective : IMaterial
     {
         public Color3 Albedo;
 
-        public NormalReflector(Color3 albedo)
+        public NormalReflective(Color3 albedo)
         {
             this.Albedo = albedo;
         }
