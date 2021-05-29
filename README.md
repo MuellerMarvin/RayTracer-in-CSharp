@@ -11,7 +11,8 @@ https://github.com/MuellerMarvin/RayTracer-in-CSharp/releases/tag/0.0.1
 
 # What can it currently do ?
 
-It can render simple spheres with a diffuse shader.
+It can render simple spheres with a number of different materials.
+New materials can also be created in-code using the IMaterial interface.
 
 # How to compile ?
 
