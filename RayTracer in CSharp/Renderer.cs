@@ -38,7 +38,9 @@ namespace Raytracing
         #region RenderFunctions
         public Color4[] RenderScene(Camera camera)
         {
+            #pragma warning disable IDE0059 // Unnecessary assignment of a value // prevents the error in user-code
             return RenderScene(camera, out long frametime);
+            #pragma warning restore IDE0059 // Unnecessary assignment of a value
         }
 
         public Color4[] RenderScene(Camera camera, out long frameTime)
