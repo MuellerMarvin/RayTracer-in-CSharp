@@ -10,7 +10,7 @@ namespace RayTracerConsole
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             bool writeDebugInfo = false;
 
