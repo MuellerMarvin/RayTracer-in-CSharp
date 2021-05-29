@@ -26,6 +26,7 @@ A standard diffuse material.
 
 
 ![spheres](https://user-images.githubusercontent.com/8641639/119091756-d53fc700-ba0d-11eb-9301-0f7935d6b4f4.gif)
+
 (All spheres have this material with the color gray as albedo)
 
 ### Normal Reflector ###
@@ -33,4 +34,5 @@ An unrealistic that reflects every ray towards the surface-normal.
 This results in a material where every point has the color of what it would 'see' from that perspective.
 
 ![ezgif-1-81741423ce70](https://user-images.githubusercontent.com/8641639/120057676-46523080-c045-11eb-96b2-696f461b3bc4.gif)
+
 (Only the left sphere has the material, the others are Lambertian Diffusive)
