@@ -19,7 +19,7 @@ namespace Raytracing
         #endregion
 
         #region Internal Variables
-        private ThreadLocal<Random> RanGen = new ThreadLocal<Random>(() => new Random(Guid.NewGuid().GetHashCode()));
+        private static readonly ThreadLocal<Random> RanGen = new ThreadLocal<Random>(() => new Random(Guid.NewGuid().GetHashCode()));
         #endregion
         #endregion
 
