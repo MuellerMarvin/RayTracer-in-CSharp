@@ -29,7 +29,7 @@ A standard diffuse material.
 
 (All spheres have this material with the color gray as albedo)
 
-### Normal Reflector ###
+### Normal Reflective ###
 An unrealistic that reflects every ray towards the surface-normal.
 This results in a material where every point has the color of what it would 'see' from that perspective.
 
