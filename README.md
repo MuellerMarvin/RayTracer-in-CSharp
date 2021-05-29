@@ -19,7 +19,17 @@ It can render simple spheres with a diffuse shader.
 The repo consists of a VS2019 Solution that runs best with .NET 5 installed.
 Just open it and given you have selected .NET 5 in the installer it should compile by itself.
 
-# Will there be more ?
+# Which materials are there ?
 
-Yes. I'm currently working on reflective surfaces and an implementation of materials as well as rendering of polygon-based models, not just simple spheres.
+### Lambertian Reflective ###
+A standard diffuse material.
 
+
+![spheres](https://user-images.githubusercontent.com/8641639/119091756-d53fc700-ba0d-11eb-9301-0f7935d6b4f4.gif)
+(All spheres have this material with the color gray as albedo)
+
+### Normal Reflector ###
+An unrealistic that reflects every ray towards the surface-normal.
+This results in a material where every point has the color of what it would 'see' from that perspective.
+![ezgif-1-81741423ce70](https://user-images.githubusercontent.com/8641639/120057676-46523080-c045-11eb-96b2-696f461b3bc4.gif)
+(Only the left sphere has the material, the others are Lambertian Diffusive)
