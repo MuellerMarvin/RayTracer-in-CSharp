@@ -20,7 +20,7 @@ namespace Raytracing.DataStructures
         {
             get
             {
-                const double s = 1e-8;
+                const double s = 1e-8; // 0.00000001
                 return (this.X < s) && (this.Y < s) && (this.Z < s);
             }
         }
