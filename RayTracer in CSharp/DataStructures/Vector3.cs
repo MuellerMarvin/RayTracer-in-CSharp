@@ -16,6 +16,10 @@ namespace Raytracing.DataStructures
         public double X { get; set; }
         public double Y { get; set; }
         public double Z { get; set; }
+
+        /// <summary>
+        /// Returns true if all axis are < 0.00000001
+        /// </summary>
         public bool IsNearZero
         {
             get
@@ -24,6 +28,31 @@ namespace Raytracing.DataStructures
                 return (this.X < s) && (this.Y < s) && (this.Z < s);
             }
         }
+
+        /// <summary>
+        /// Gets the length of the vector from 0, 0, 0
+        /// </summary>
+        public double Length
+        {
+            get
+            {
+                return Math.Sqrt(this.LengthSquared);
+            }
+        }
+
+        public double LengthSquared
+        {
+            get
+            {
+                return this.X * this.X + this.Y * this.Y + this.Z * this.Z;
+            }
+        }
+
+        /// <summary>
+        /// Calculate "unit vector" (Vector with the length of 1)
+        /// </summary>
+        public Vector3 UnitVector => (this / this.Length);
+
         #endregion
 
         #region Constructors
@@ -152,31 +181,6 @@ namespace Raytracing.DataStructures
         #endregion
 
         #region Utility
-
-        /// <summary>
-        /// Gets the length of the vector from 0, 0, 0
-        /// </summary>
-        public double Length
-        {
-            get
-            {
-                return Math.Sqrt(this.LengthSquared);
-            }
-        }
-
-        public double LengthSquared
-        {
-            get
-            {
-                return this.X * this.X + this.Y * this.Y + this.Z * this.Z;
-            }
-        }
-
-        /// <summary>
-        /// Calculate "unit vector" (Vector with the length of 1)
-        /// </summary>
-        public Vector3 UnitVector => (this / this.Length);
-
 
         /// <summary>
         /// Dots two different Vectors with one another
