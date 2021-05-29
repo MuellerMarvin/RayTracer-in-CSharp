@@ -184,12 +184,14 @@ namespace Raytracing
                 return new Color4(0, 0, 0, 1);
 
             Color4 pixelColor = new Color4(0, 0, 0, 0);
+            // check if an object is hit
             if (hittableObjects.Hit(ray, 0.001, double.PositiveInfinity, out HitRecord hitRecord))
             {
-                Vector3 target = (Vector3)hitRecord.Point + hitRecord.Normal + Vector3.GetRandomInUnitSphere();
-                pixelColor = 0.5 * GetRayColor(new Ray(hitRecord.Point, target - (Vector3)hitRecord.Point), hittableObjects, false, maxBounces - 1);
-                pixelColor.A = 1;
+                // check if this ray will scatter
+                if (hitRecord.Material.Scatter(ray, hitRecord, out Color3 attenuation, out Ray scatteredRay))
+                    return new Color4(attenuation, 1) * GetRayColor(scatteredRay, hittableObjects, transparentBackground, maxBounces - 1);
             }
+            // transparent background
             else if (!transparentBackground)
             {
                 // draw a background

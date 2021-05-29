@@ -30,12 +30,6 @@ namespace Raytracing.Materials
                 Direction = hitRecord.Normal + Vector3.GetRandomUnitVector()
             };
 
-            // catch degenerate scatter direction
-            if (scatteredRay.Direction.isNearZero)
-            {
-                scatteredRay.Direction = hitRecord.Normal;
-            }
-
             colorAttenuation = this.Albedo;
             
             // a diffuse material doesn't reflect, so it always scatters or absorbs (attenuation is the amount of absorbance)
