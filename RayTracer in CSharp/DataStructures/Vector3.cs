@@ -10,6 +10,14 @@ namespace Raytracing.DataStructures
         #region Static Values
         //private static readonly Random RandomGen = new Random();
         private static readonly ThreadLocal<Random> RandomGen = new ThreadLocal<Random>(() => new Random(Guid.NewGuid().GetHashCode()));
+
+        public static Vector3 Zero
+        {
+            get
+            {
+                return new Vector3(0, 0, 0);
+            }
+        }
         #endregion
 
         #region Properties
