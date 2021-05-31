@@ -2,6 +2,7 @@
 using Raytracing;
 using Raytracing.DataStructures;
 using Raytracing.Hittables;
+using Raytracing.Materials;
 
 namespace PerformanceReporter
 {
@@ -16,16 +17,26 @@ namespace PerformanceReporter
 
             int runs = 10;
 
-            raytracer.HittableObjects = new HittableList()
+
+            IMaterial cyan = new LambertianDiffuse(new Color3(0, 0.88, 0.88));
+            IMaterial gray = new LambertianDiffuse(new Color3(0.5, 0.5, 0.5));
+            IMaterial red = new LambertianDiffuse(new Color3(0.8, 0.2, 0.2));
+            IMaterial metal = new Metal(new Color3(0.9, 0.9, 0.9), 0);
+
+            Renderer renderer = new()
             {
-                new Sphere(0, 1, 0, 0.5, null),
-                new Sphere(0.5, 1, 0, 0.5, null),
-                new Sphere(0, 1, 0.6, 0.5, null),
-                new Sphere(0, 1, -100.5, 100, null)
+                // Define objects in the scene
+                HittableObjects = new HittableList
+                {
+                    new Sphere(0, 1, 0, 0.5, gray),
+                    new Sphere(1, 1, 0, 0.5, red),
+                    new Sphere(0, 1, -100.5, 100, metal),
+                    new Sphere(0, -2, 0, 1, cyan)
+                }
             };
 
             // Define the camera
-            Camera camera = new Camera(xRes, yRes)
+            Camera camera = new(xRes, yRes)
             {
                 Origin = new Vector3(-1, 0, 0),
                 MultithreadedRendering = true,
@@ -33,7 +44,7 @@ namespace PerformanceReporter
                 MaxBounces = 12
             };
 
-            for(int i = 0; i < runs; i++)
+            for (int i = 0; i < runs; i++)
             {
                 raytracer.RenderScene(camera, out long frameTime);
 
