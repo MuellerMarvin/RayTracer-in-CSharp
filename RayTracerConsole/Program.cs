@@ -15,17 +15,19 @@ namespace RayTracerConsole
             bool writeDebugInfo = false;
 
             IMaterial cyan = new LambertianDiffuse(new Color3(0, 0.88, 0.88));
-            IMaterial gray = new LambertianDiffuse(new Color3(0.5, 0.5, 0.5));
-            IMaterial red = new LambertianDiffuse(new Color3(0.8, 0.2, 0.2));
-            IMaterial metal = new Metal(new Color3(0.1, 0.1, 0.1));
+            IMaterial gray = new LambertianDiffuse(new Color3(0.8, 0.8, 0.8));
+            IMaterial reddish = new LambertianDiffuse(new Color3(1, 0.5, 0.39));
+            IMaterial purple = new LambertianDiffuse(new Color3(0.7, 0.1, 0.8));
+            IMaterial metal = new Metal(new Color3(0.9, 0.9, 0.9), 0.01);
 
             Renderer renderer = new()
             {
                 // Define objects in the scene
                 HittableObjects = new HittableList
                 {
+                    new Sphere(-1, 1, 0, 0.5, purple),
                     new Sphere(0, 1, 0, 0.5, metal),
-                    new Sphere(1, 1, 0, 0.5, red),
+                    new Sphere(1, 1, 0, 0.5, reddish),
                     new Sphere(0, 1, -100.5, 100, gray),
                     new Sphere(0, -2, 0, 1, cyan)
                 }
