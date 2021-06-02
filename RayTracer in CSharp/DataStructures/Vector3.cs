@@ -9,7 +9,7 @@ namespace Raytracing.DataStructures
     {
         #region Static Values
         //private static readonly Random RandomGen = new Random();
-        private static readonly ThreadLocal<Random> RandomGen = new ThreadLocal<Random>(() => new Random(Guid.NewGuid().GetHashCode()));
+        private static readonly ThreadLocal<Random> RandomGen = new(() => new Random(Guid.NewGuid().GetHashCode()));
 
         public static Vector3 Zero
         {
@@ -222,6 +222,21 @@ namespace Raytracing.DataStructures
         public static Vector3 Reflect(Vector3 vector, Vector3 normal)
         {
             return vector - 2 * Vector3.Dot(vector, normal) * normal;
+        }
+
+        /// <summary>
+        /// Refracts an incoming vector off a material's surface (normal) with a specified refraction ratio
+        /// </summary>
+        /// <param name="unitDirection">Incoming Vector Direction (Must be a unit vector)</param>
+        /// <param name="normal">The normal vector at the impact</param>
+        /// <param name="refractionRatio">Refraction Ratio of the equation</param>
+        /// <returns></returns>
+        public static Vector3 Refract(Vector3 unitDirection, Vector3 normal, float refractionRatio)
+        {
+            double cos_theta = MathF.Min((float)Vector3.Dot(-unitDirection, normal), 1.0f);
+            Vector3 rayOutPerpendicular = refractionRatio * (unitDirection + cos_theta * normal);
+            Vector3 rayOutParallel = -MathF.Sqrt(MathF.Abs(1.0f - (float)rayOutPerpendicular.LengthSquared)) * normal;
+            return rayOutPerpendicular + rayOutParallel;
         }
 
         #region Randomness
