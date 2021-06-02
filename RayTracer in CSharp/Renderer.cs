@@ -19,7 +19,7 @@ namespace Raytracing
         #endregion
 
         #region Internal Variables
-        private static readonly ThreadLocal<Random> RanGen = new ThreadLocal<Random>(() => new Random(Guid.NewGuid().GetHashCode()));
+        private static readonly ThreadLocal<Random> RanGen = new(() => new Random(Guid.NewGuid().GetHashCode()));
         #endregion
         #endregion
 
@@ -45,7 +45,7 @@ namespace Raytracing
 
         public Color4[] RenderScene(Camera camera, out long frameTime)
         {
-            Stopwatch sw = new Stopwatch();
+            Stopwatch sw = new();
             Color4[] pixels;
             if (camera.MultithreadedRendering)
             {
@@ -154,7 +154,7 @@ namespace Raytracing
                 for (int x = 0; x < camera.ResolutionWidth; ++x)
                 {
 
-                    Color4 pixel = new Color4(1, 1, 1, 1);
+                    Color4 pixel = new(1, 1, 1, 1);
 
                     if(HittableObjects.Hit(camera.GetRay(x, y), 0, double.PositiveInfinity, out HitRecord hitRecord))
                     {
@@ -171,7 +171,7 @@ namespace Raytracing
 
         private Color4 RenderPixel(double x, double y, Camera camera, HittableList hittableObject)
         {
-            Color4 pixelColor = new Color4(0, 0, 0, 0);
+            Color4 pixelColor = new(0, 0, 0, 0);
             for (int i = 0; i < camera.SamplesPerPixel; i++)
             {
                 pixelColor += GetRayColor(camera.GetRay(x + (RanGen.Value.NextDouble() * 2 - 1), y + (RanGen.Value.NextDouble() * 2 - 1)), hittableObject, camera.TransparentBackground, camera.MaxBounces);
@@ -185,7 +185,7 @@ namespace Raytracing
             if (maxBounces < 0)
                 return new Color4(0, 0, 0, 1);
 
-            Color4 pixelColor = new Color4(0, 0, 0, 0);
+            Color4 pixelColor = new(0, 0, 0, 0);
             // check if an object is hit
             if (hittableObjects.Hit(ray, 0.001, double.PositiveInfinity, out HitRecord hitRecord))
             {
@@ -208,7 +208,7 @@ namespace Raytracing
         #endregion
 
         #region Write Functions
-        public void WriteFrame(string filePath, Color4[] pixels, int height, int width, ImageFormat format, bool writeDebugInfo, long frameTime, Camera camera)
+        public static void WriteFrame(string filePath, Color4[] pixels, int height, int width, ImageFormat format, bool writeDebugInfo, long frameTime, Camera camera)
         {
             Bitmap bitmap = ColorArrayToBitmap(width, height, pixels);
 
@@ -225,9 +225,9 @@ namespace Raytracing
             bitmap.Save(filePath, format);
         }
 
-        public Bitmap ColorArrayToBitmap(int xRes, int yRes, Color4[] pixels)
+        public static Bitmap ColorArrayToBitmap(int xRes, int yRes, Color4[] pixels)
         {
-            Bitmap bitmap = new Bitmap(xRes, yRes, PixelFormat.Format32bppArgb);
+            Bitmap bitmap = new(xRes, yRes, PixelFormat.Format32bppArgb);
             for (int y = yRes - 1; y >= 0; y--)
             {
                 for (int x = 0; x < xRes; x++)
@@ -244,13 +244,13 @@ namespace Raytracing
 
         #region Utility
 
-        private double Scale(double value, double min, double max, double minScaled, double maxScaled)
+        private static double Scale(double value, double min, double max, double minScaled, double maxScaled)
         {
             double scaled = minScaled + (maxScaled - minScaled) * ((value - min) / (max - min));
             return scaled;
         }
 
-        private double DegreesToRadians(double degrees)
+        private static double DegreesToRadians(double degrees)
         {
             return degrees * Math.PI / 180.0;
         }
