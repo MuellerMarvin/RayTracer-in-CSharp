@@ -249,7 +249,7 @@ namespace Raytracing.DataStructures
         {
             while (true)
             {
-                Vector3 vector = new Vector3(RandomGen.Value.NextDouble(), RandomGen.Value.NextDouble(), RandomGen.Value.NextDouble());
+                Vector3 vector = new(RandomGen.Value.NextDouble(), RandomGen.Value.NextDouble(), RandomGen.Value.NextDouble());
                 if (vector.LengthSquared >= 1) continue; // continue if not in the sphere
                 return vector; // else
             }
