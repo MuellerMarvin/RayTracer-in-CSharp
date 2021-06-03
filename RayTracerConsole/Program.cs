@@ -14,88 +14,42 @@ namespace RayTracerConsole
         {
             bool writeDebugInfo = false;
 
-            IMaterial cyan = new LambertianDiffuse(new Color3(0, 0.88, 0.88));
-            IMaterial gray = new LambertianDiffuse(new Color3(0.8, 0.8, 0.8));
-            IMaterial reddish = new LambertianDiffuse(new Color3(1, 0.5, 0.39));
-            IMaterial purple = new LambertianDiffuse(new Color3(0.7, 0.1, 0.8));
-            IMaterial metal = new Metal(new Color3(0.9, 0.9, 0.9), 0.01);
+            IMaterial groundMaterial = new LambertianDiffuse(new Color3(0.8, 0.8, 0));
+            IMaterial centerMaterial = new LambertianDiffuse(new Color3(0.7, 0.3, 0.3));
+            IMaterial leftMaterial = new Metal(new Color3(0.8, 0.8, 0.8));
+            IMaterial rightMaterial = new Metal(new Color3(0.8,0.6,0.2));
 
             Renderer renderer = new()
             {
                 // Define objects in the scene
                 HittableObjects = new HittableList
                 {
-                    new Sphere(-1, 1, 0, 0.5, purple),
-                    new Sphere(0, 1, 0, 0.5, metal),
-                    new Sphere(1, 1, 0, 0.5, reddish),
-                    new Sphere(0, 1, -100.5, 100, gray),
-                    new Sphere(0, -2, 0, 1, cyan)
+                    new Sphere(new Vector3(0, -100.5, -1), 100, groundMaterial),
+                    new Sphere(new Vector3(0,0,-1), 0.5, centerMaterial),
+                    new Sphere(new Vector3(-1,0,-1), 0.5, leftMaterial),
+                    new Sphere(new Vector3(1, 0, -1), 0.5, rightMaterial),
+                    new Sphere(new Vector3(0,0,-1), 1, new SurfaceNormal(new LambertianDiffuse()))
                 }
             };
 
             // Define the camera
-            Camera camera = new(720, 480)
+            Camera camera = new(400, 225)
             {
-                Origin = new Vector3(-1, 0, 0),
+                Origin = new Vector3(0, 0, 0),
                 MultithreadedRendering = true,
-                SamplesPerPixel = 100,
+                SamplesPerPixel = 10,
                 MaxBounces = 12
             };
 
-            Console.WriteLine("Rendering...");
-            const int frames = 200;
-            long lastFrameTime = 0;
-            for (int i = 0; i < frames; i++)
-            {
-                // calculate time remaining
-                string timeRemaining = String.Empty;
-                if (lastFrameTime != 0)
-                {
-                    timeRemaining = "Time remaining: ~" + Math.Round(((double)lastFrameTime / 1000d / 60d) * frames).ToString() + " minutes";
-                }
+            // Render
+            RenderResult result = new();
+            result.frameNumber = 0;
+            result.camera = camera;
+            result.pixels = renderer.RenderScene(camera, out result.frameTime);
 
-                // provide a status
-                Console.CursorLeft = 0;
-                Console.CursorTop = 1;
-                int percentage = (int)Math.Round((float)(i) / ((float)frames / 100f));
-                Console.Write("{0} out of {1} completed. ({2} %) {3}\n{4}", i, frames, percentage, timeRemaining, GetProgressBar(50, percentage));
-
-                // define camera + changes to it
-                Camera localCam = new(camera.ResolutionWidth, camera.ResolutionHeight)
-                {
-                    Origin = camera.Origin + new Vector3(0.01f * i, 0, 0),
-                    MultithreadedRendering = camera.MultithreadedRendering,
-                    SamplesPerPixel = camera.SamplesPerPixel,
-                    MaxBounces = camera.MaxBounces
-                };
-
-                RenderResult result = new()
-                {
-                    frameNumber = i,
-                    camera = localCam
-                };
-
-                // Render
-                result.pixels = renderer.RenderScene(localCam, out long frameTime);
-                result.frameTime = frameTime;
-
-                // Write to disk
-                System.IO.Directory.CreateDirectory("./images/");
-                Renderer.WriteFrame("./images/image_" + result.frameNumber + ".png", result.pixels, result.camera.ResolutionHeight, result.camera.ResolutionWidth, ImageFormat.Png, writeDebugInfo, result.frameTime, result.camera);
-
-                // record last frametime for time approximation
-                lastFrameTime = frameTime;
-            }
-
-            Console.Clear();
-            Console.WriteLine("Done.");
-            Console.ReadKey();
-        }
-
-        static string GetProgressBar(int segments, double currentPercentage)
-        {
-            int completedSegments = (int)(currentPercentage / (100d / (double)segments));
-            return '[' + new string('#', completedSegments) + new string('-', segments - completedSegments) + ']';
+            // Write to disk
+            System.IO.Directory.CreateDirectory("./images/");
+            Renderer.WriteFrame("./images/image_" + result.frameNumber + ".png", result.pixels, result.camera.ResolutionHeight, result.camera.ResolutionWidth, ImageFormat.Png, writeDebugInfo, result.frameTime, result.camera);
         }
     }
 
