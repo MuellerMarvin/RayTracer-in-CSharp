@@ -224,21 +224,6 @@ namespace Raytracing.DataStructures
             return vector - 2 * Vector3.Dot(vector, normal) * normal;
         }
 
-        /// <summary>
-        /// Refracts an incoming vector off a material's surface (normal) with a specified refraction ratio
-        /// </summary>
-        /// <param name="unitDirection">Incoming Vector Direction (Must be a unit vector)</param>
-        /// <param name="normal">The normal vector at the impact</param>
-        /// <param name="refractionRatio">Refraction Ratio of the equation</param>
-        /// <returns></returns>
-        public static Vector3 Refract(Vector3 unitDirection, Vector3 normal, float refractionRatio)
-        {
-            double cos_theta = MathF.Min((float)Vector3.Dot(-unitDirection, normal), 1.0f);
-            Vector3 rayOutPerpendicular = refractionRatio * (unitDirection + cos_theta * normal);
-            Vector3 rayOutParallel = -MathF.Sqrt(MathF.Abs(1.0f - (float)rayOutPerpendicular.LengthSquared)) * normal;
-            return rayOutPerpendicular + rayOutParallel;
-        }
-
         #region Randomness
         public static Vector3 GetRandomVector()
         {
@@ -294,11 +279,6 @@ namespace Raytracing.DataStructures
             this.Z = array[2];
         }
         #region Interclass-casting
-        public static implicit operator Color3(Vector3 v)
-        {
-            return new Color3(v.X, v.Y, v.Z);
-        }
-
         public static implicit operator Point3(Vector3 v)
         {
             return new Point3(v.X, v.Y, v.Z);

@@ -53,6 +53,12 @@ namespace Raytracing.DataStructures
         {
             return new Color4(c.R, c.G, c.B, 0);
         }
+
+        public static implicit operator Color3(Vector3 v)
+        {
+            Vector3 unitVector = v.UnitVector;
+            return new Color3(MathF.Abs((float)v.X), MathF.Abs((float)v.Y), MathF.Abs((float)v.Z));
+        }
         #endregion
     }
 }
