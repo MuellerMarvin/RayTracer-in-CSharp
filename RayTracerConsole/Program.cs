@@ -15,9 +15,9 @@ namespace RayTracerConsole
             bool writeDebugInfo = false;
 
             IMaterial groundMaterial = new LambertianDiffuse(new Color3(0.8, 0.8, 0));
-            IMaterial rightMaterial = new LambertianDiffuse(new Color3(0.7, 0.3, 0.3));
-            IMaterial leftMaterial = new Dielectric(1.5);//new Metal(new Color3(0.8, 0.8, 0.8));
-            IMaterial centerMaterial = new Dielectric(1.5);//new Metal(new Color3(0.8,0.6,0.2));
+            IMaterial rightMaterial = new Metal(new Color3(0.8, 0.8, 0.8));
+            IMaterial leftMaterial = new Dielectric(1.5);
+            IMaterial centerMaterial = new LambertianDiffuse(new Color3(0.8,0.6,0.2));
 
             Renderer renderer = new()
             {
@@ -27,7 +27,6 @@ namespace RayTracerConsole
                     new Sphere(new Vector3(0, 1, -100.5), 100, groundMaterial),
                     new Sphere(new Vector3(0,1,0), 0.5, centerMaterial),
                     new Sphere(new Vector3(-1,1,0), 0.5, leftMaterial),
-                    new Sphere(new Vector3(-1,1,0), -0.4, leftMaterial),
                     new Sphere(new Vector3(1, 1, 0), 0.5, rightMaterial),
                 }
             };
