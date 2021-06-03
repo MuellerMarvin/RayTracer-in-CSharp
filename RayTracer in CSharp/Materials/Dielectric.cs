@@ -28,9 +28,9 @@ namespace Raytracing.Materials
             double cosTheta = Math.Min(Vector3.Dot(-unitDirection, hitRecord.Normal), 1.0f);
             double sinTheta = Math.Sqrt(1.0 - Math.Pow(cosTheta, 2));
 
-            if (refractionRatio * sinTheta > 1.0)
+            bool cannotRefract = refractionRatio * sinTheta > 1.0;
+            if (cannotRefract || GetReflectance(cosTheta, refractionRatio) > Vector3.RandomGen.Value.NextDouble())
             {
-                Console.WriteLine("owo");
                 scatteredRay = new Ray(hitRecord.Point, Vector3.Reflect(rayIn.Direction, hitRecord.Normal));
             }
             else
@@ -41,6 +41,14 @@ namespace Raytracing.Materials
             }
 
             return true;
+        }
+
+        private static double GetReflectance(double coSine, double refractionRatio)
+        {
+            // Schlick's approximation for reflectance
+            double r0 = (1 - refractionRatio) / (1 + refractionRatio);
+            r0 = r0 * r0;
+            return r0 + (1 - r0) * Math.Pow((1 - coSine), 5);
         }
 
         #region Defaults
