@@ -36,6 +36,14 @@ https://user-images.githubusercontent.com/8641639/120634937-24551580-c46c-11eb-8
 
 (The middle sphere is metal, the others Lambertian Diffusive)
 
+### Dielectric ###
+Dielectric material for transparent materials (like glass) - supporting custom index of refraction.
+The standard glass material has a refractive index of 1.5.
+
+![image_0](https://user-images.githubusercontent.com/8641639/120635544-e1477200-c46c-11eb-8328-93ae491227cb.png)
+
+(Left Glass bubble, middle glass sphere, right lambertian sphere, ground lambertian sphere)
+
 ### Normal Reflective ###
 An unrealistic that reflects every ray towards the surface-normal.
 This results in a material where every point has the color of what it would 'see' from that perspective.
