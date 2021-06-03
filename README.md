@@ -1,6 +1,6 @@
 # RayTracer-in-CSharp
 
-![spheres](https://user-images.githubusercontent.com/8641639/119091756-d53fc700-ba0d-11eb-9301-0f7935d6b4f4.gif)
+https://user-images.githubusercontent.com/8641639/120634937-24551580-c46c-11eb-8a31-f1b866e2ff6b.mp4
 
 An implementation of a simple Raytracer in C#, loosely following the guidance of http://raytracing.github.io.
 
@@ -29,6 +29,13 @@ A standard diffuse material.
 
 (All spheres have this material with the color gray as albedo)
 
+### Metal ###
+Metal with an adjustable level of roughness.
+
+https://user-images.githubusercontent.com/8641639/120634937-24551580-c46c-11eb-8a31-f1b866e2ff6b.mp4
+
+(The middle sphere is metal, the others Lambertian Diffusive)
+
 ### Normal Reflective ###
 An unrealistic that reflects every ray towards the surface-normal.
 This results in a material where every point has the color of what it would 'see' from that perspective.
@@ -36,3 +43,6 @@ This results in a material where every point has the color of what it would 'see
 ![normalreflective](https://user-images.githubusercontent.com/8641639/120059884-8a98fd00-c054-11eb-8702-4cc7d776ad3f.gif)
 
 (Only the left sphere has the material, the others are Lambertian Diffusive)
+
+
+
