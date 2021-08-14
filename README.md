@@ -45,7 +45,7 @@ The standard glass material has a refractive index of 1.5.
 (Left Glass bubble, middle glass sphere, right lambertian sphere, ground lambertian sphere)
 
 ### Normal Reflective ###
-An unrealistic that reflects every ray towards the surface-normal.
+An unrealistic material that reflects every ray towards the surface-normal.
 This results in a material where every point has the color of what it would 'see' from that perspective.
 
 ![normalreflective](https://user-images.githubusercontent.com/8641639/120059884-8a98fd00-c054-11eb-8702-4cc7d776ad3f.gif)
