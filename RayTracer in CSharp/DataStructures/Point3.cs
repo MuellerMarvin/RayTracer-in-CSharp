@@ -10,6 +10,8 @@ namespace Raytracing.DataStructures
         public double X { get; set; }
         public double Y { get; set; }
         public double Z { get; set; }
+
+        public static Point3 Zero { get { return new Point3(0, 0, 0); } }
         #endregion
 
         #region Functions
