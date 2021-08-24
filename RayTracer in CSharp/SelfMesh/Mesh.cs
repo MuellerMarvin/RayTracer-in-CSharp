@@ -37,7 +37,9 @@ namespace Raytracing.SelfMesh
 
             // Set up variables
             List<Point3> vertices = new();
+            List<Vector3> normals = new();
             List<int[]> faceIndices = new();
+            List<int> normalIndices = new();
 
             foreach (string line in lines)
             {
@@ -52,6 +54,7 @@ namespace Raytracing.SelfMesh
                     case "vt": // texture coordinates
                         break;
                     case "vn": // vertex normals
+                        normals.Add(new Vector3(double.Parse(particles[1]), double.Parse(particles[2]), double.Parse(particles[3])));
                         break;
                     case "vp": // parameter space vertices
                         break;
@@ -67,6 +70,9 @@ namespace Raytracing.SelfMesh
                                 face[i - 1] = int.Parse(particles[i].Split('/')[0]) - 1; // lower the index by 1 to correct for the .obj waveform 1-based indexing
                             }
                             faceIndices.Add(face);
+
+                            // add vertex-normal index
+                            normalIndices.Add(int.Parse(particles[1].Split('/')[2]) - 1); // correct for 1-based index
                         }
                         break;
                     case "l": // lines
@@ -91,7 +97,7 @@ namespace Raytracing.SelfMesh
                 }
 
                 // build triangle
-                triangles[i] = new Triangle(points[0], points[1], points[2]);
+                triangles[i] = new Triangle(points[0], points[1], points[2], normals[normalIndices[i]]);
             }
 
             return new Mesh(triangles, vertices.ToArray());
