@@ -1,0 +1,124 @@
+﻿using System;
+using System.IO;
+using System.Collections.Generic;
+
+using Raytracing.Hittables;
+using Raytracing.DataStructures;
+
+namespace Raytracing.SelfMesh
+{
+    public class Mesh : IHittable
+    {
+        public Point3 Origin { get; set; } = new Point3(0, 0, 0);
+        public Triangle[] Triangles { get; private set; }
+        public Point3[] Vertices { get; private set; }
+
+        public Mesh(Triangle[] triangles, Point3[] vertices)
+        {
+            Triangles = triangles;
+            Vertices = vertices;
+        }
+
+        /// <summary>
+        /// Create a mesh from a specified .obj filepath
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public static Mesh FromObjFile(string filePath)
+        {
+            // read file
+            StreamReader r = new(filePath);
+            string fileContent = r.ReadToEnd();
+            r.Close();
+            r.Dispose();
+
+            // split file into lines
+            string[] lines = fileContent.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+            // Set up variables
+            List<Point3> vertices = new();
+            List<int[]> faceIndices = new();
+
+            foreach (string line in lines)
+            {
+                string[] particles = line.Split(' ');
+
+
+                switch (particles[0])
+                {
+                    case "v": // vertices
+                        vertices.Add(new Point3(double.Parse(particles[1]), double.Parse(particles[2]), double.Parse(particles[3])));
+                        break;
+                    case "vt": // texture coordinates
+                        break;
+                    case "vn": // vertex normals
+                        break;
+                    case "vp": // parameter space vertices
+                        break;
+                    case "f": // faces
+                        {
+                            // if the face doesn't consist of 3 vertices, ignore it
+                            if (particles.Length != 4)
+                                break;
+
+                            int[] face = new int[3];
+                            for (int i = 1; i < particles.Length; i++)
+                            {
+                                face[i - 1] = int.Parse(particles[i].Split('/')[0]) - 1; // lower the index by 1 to correct for the .obj waveform 1-based indexing
+                            }
+                            faceIndices.Add(face);
+                        }
+                        break;
+                    case "l": // lines
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            // resolve faces to triangles
+            // no automatic triangulisation yet, as non-triangulized faces are auto-rejected on-interpretion above
+            // todo: auto-triangulate n-gons into triangle faces
+            Triangle[] triangles = new Triangle[faceIndices.Count];
+            for (int i = 0; i < faceIndices.Count; i++)
+            {
+                Point3[] points = new Point3[3];
+
+                // retrieve vertices according to indexing in the file
+                for (int j = 0; j < 3; j++)
+                {
+                    points[j] = vertices[faceIndices[i][j]];
+                }
+
+                // build triangle
+                triangles[i] = new Triangle(points[0], points[1], points[2]);
+            }
+
+            return new Mesh(triangles, vertices.ToArray());
+        }
+
+        public bool Hit(Ray ray, double minDist, double maxDist, out HitRecord hitRecord)
+        {
+            bool hit = false;
+            hitRecord = new();
+            hitRecord.Distance = double.MaxValue;
+
+            for (int i = 0; i < Triangles.Length; i++)
+            {
+                // hit it
+                if(Triangles[i].Hit(ray, minDist, maxDist, out HitRecord currentRecord))
+                {
+                    // if it hit, say so
+                    hit = true;
+                }
+                
+
+                // if its the lowest distance yet, save it
+                if (currentRecord.Distance < hitRecord.Distance)
+                    hitRecord = currentRecord;
+            }
+
+            return hit;
+        }
+    }
+}
