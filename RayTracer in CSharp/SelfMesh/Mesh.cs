@@ -12,11 +12,12 @@ namespace Raytracing.SelfMesh
         public Point3 Origin { get; set; } = new Point3(0, 0, 0);
         public Triangle[] Triangles { get; private set; }
         public Point3[] Vertices { get; private set; }
+        public Materials.IMaterial Material { get; set; }
 
-        public Mesh(Triangle[] triangles, Point3[] vertices)
+        public Mesh(Triangle[] triangles, Point3[] Vertices)
         {
             Triangles = triangles;
-            Vertices = vertices;
+            Vertices = Vertices;
         }
 
         /// <summary>
@@ -36,7 +37,7 @@ namespace Raytracing.SelfMesh
             string[] lines = fileContent.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
             // Set up variables
-            List<Point3> vertices = new();
+            List<Point3> Vertices = new();
             List<Vector3> normals = new();
             List<int[]> faceIndices = new();
             List<int> normalIndices = new();
@@ -48,19 +49,19 @@ namespace Raytracing.SelfMesh
 
                 switch (particles[0])
                 {
-                    case "v": // vertices
-                        vertices.Add(new Point3(double.Parse(particles[1]), double.Parse(particles[2]), double.Parse(particles[3])));
+                    case "v": // Vertices
+                        Vertices.Add(new Point3(double.Parse(particles[1]), double.Parse(particles[2]), double.Parse(particles[3])));
                         break;
                     case "vt": // texture coordinates
                         break;
                     case "vn": // vertex normals
                         normals.Add(new Vector3(double.Parse(particles[1]), double.Parse(particles[2]), double.Parse(particles[3])));
                         break;
-                    case "vp": // parameter space vertices
+                    case "vp": // parameter space Vertices
                         break;
                     case "f": // faces
                         {
-                            // if the face doesn't consist of 3 vertices, ignore it
+                            // if the face doesn't consist of 3 Vertices, ignore it
                             if (particles.Length != 4)
                                 break;
 
@@ -90,17 +91,17 @@ namespace Raytracing.SelfMesh
             {
                 Point3[] points = new Point3[3];
 
-                // retrieve vertices according to indexing in the file
+                // retrieve Vertices according to indexing in the file
                 for (int j = 0; j < 3; j++)
                 {
-                    points[j] = vertices[faceIndices[i][j]];
+                    points[j] = Vertices[faceIndices[i][j]];
                 }
 
                 // build triangle
                 triangles[i] = new Triangle(points[0], points[1], points[2], normals[normalIndices[i]]);
             }
 
-            return new Mesh(triangles, vertices.ToArray());
+            return new Mesh(triangles, Vertices.ToArray());
         }
 
         public bool Hit(Ray ray, double minDist, double maxDist, out HitRecord hitRecord)
@@ -116,13 +117,14 @@ namespace Raytracing.SelfMesh
                 {
                     // if it hit, say so
                     hit = true;
-                }
-                
 
-                // if its the lowest distance yet, save it
-                if (currentRecord.Distance < hitRecord.Distance)
-                    hitRecord = currentRecord;
+                    // if its the lowest distance yet, save it
+                    if (currentRecord.Distance < hitRecord.Distance)
+                        hitRecord = currentRecord;
+                }
             }
+
+            hitRecord.Material = this.Material;
 
             return hit;
         }

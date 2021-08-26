@@ -9,7 +9,7 @@ namespace Raytracing.SelfMesh
         public Vector3 Normal { get; set; }
 
         #region Possibility of Editing
-        public Point3 Vertice1 {
+        public Point3 Vertex1 {
             get
             {
                 return Vertices[0];
@@ -19,7 +19,7 @@ namespace Raytracing.SelfMesh
                 Vertices[0] = value;
             }
         }
-        public Point3 Vertice2
+        public Point3 Vertex2
         {
             get
             {
@@ -30,7 +30,7 @@ namespace Raytracing.SelfMesh
                 Vertices[1] = value;
             }
         }
-        public Point3 Vertice3
+        public Point3 Vertex3
         {
             get
             {
@@ -70,8 +70,56 @@ namespace Raytracing.SelfMesh
         public bool Hit(Ray ray, double minDist, double maxDist, out HitRecord hitRecord, Point3 origin)
         {
             hitRecord = new();
+
+            Vector3 edge1 = new();
+            Vector3 edge2 = new Vector3();
+
+            Vector3 h = new();
+            Vector3 s = new();
+            Vector3 q = new();
+
+            double a, f, u, v;
+
+            edge1 = (Vector3)this.Vertex2 - (Vector3)this.Vertex1;
+            edge2 = (Vector3)this.Vertex3 - (Vector3)this.Vertex1;
+
+            h = Vector3.Cross(ray.Direction, edge2);
+
+            a = Vector3.Dot(edge1, h);
+
+            if (a > -Epsilon && a < Epsilon)
+                return false; // ray is parallel to triangle
+
+            f = 1.0d / a;
+
+            s = (Vector3)ray.Origin - this.Vertex1;
+            u = f * (Vector3.Dot(s, h));
+
+            if (u < 0 || u > 1)
+                return false;
+
+            q = Vector3.Cross(s, edge1);
+            v = f * Vector3.Dot(ray.Direction, q);
+
+            if (v < 0 || u + v > 1)
+                return false;
+
+            // find intersection point on ray with triangle
+            double t = f * Vector3.Dot(edge2, q);
+            if(t > Epsilon) // intersection
+            {
+                hitRecord.Normal = this.Normal;
+                hitRecord.Distance = t;
+                hitRecord.Material = new Materials.LambertianDiffuse(new Color3(0.8, 0.8, 0.8));
+                hitRecord.Point = (t * ray.Direction) + ray.Origin;
+                return true;
+            }
+            // else
+            // no ray intersection
             return false;
         }
+
+        private static readonly double Epsilon = 0.0000001d;
         #endregion
     }
 }
