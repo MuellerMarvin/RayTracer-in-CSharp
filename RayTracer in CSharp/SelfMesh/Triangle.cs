@@ -71,8 +71,12 @@ namespace Raytracing.SelfMesh
         {
             hitRecord = new();
 
+            Vector3 v1 = (Vector3)this.Vertex1 + (Vector3)origin;
+            Vector3 v2 = (Vector3)this.Vertex2 + (Vector3)origin;
+            Vector3 v3 = (Vector3)this.Vertex3 + (Vector3)origin;
+
             Vector3 edge1 = new();
-            Vector3 edge2 = new Vector3();
+            Vector3 edge2 = new();
 
             Vector3 h = new();
             Vector3 s = new();
@@ -80,8 +84,8 @@ namespace Raytracing.SelfMesh
 
             double a, f, u, v;
 
-            edge1 = (Vector3)this.Vertex2 - (Vector3)this.Vertex1;
-            edge2 = (Vector3)this.Vertex3 - (Vector3)this.Vertex1;
+            edge1 = v2 - v1;
+            edge2 = v3 - v1;
 
             h = Vector3.Cross(ray.Direction, edge2);
 
@@ -92,7 +96,7 @@ namespace Raytracing.SelfMesh
 
             f = 1.0d / a;
 
-            s = (Vector3)ray.Origin - this.Vertex1;
+            s = (Vector3)ray.Origin - v1;
             u = f * (Vector3.Dot(s, h));
 
             if (u < 0 || u > 1)

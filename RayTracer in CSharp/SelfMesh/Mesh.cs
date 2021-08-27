@@ -113,7 +113,7 @@ namespace Raytracing.SelfMesh
             for (int i = 0; i < Triangles.Length; i++)
             {
                 // hit it
-                if(Triangles[i].Hit(ray, minDist, maxDist, out HitRecord currentRecord))
+                if(Triangles[i].Hit(ray, minDist, maxDist, out HitRecord currentRecord, this.Origin))
                 {
                     // if it hit, say so
                     hit = true;
