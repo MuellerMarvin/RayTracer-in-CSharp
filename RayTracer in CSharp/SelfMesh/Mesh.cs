@@ -14,10 +14,10 @@ namespace Raytracing.SelfMesh
         public Point3[] Vertices { get; private set; }
         public Materials.IMaterial Material { get; set; }
 
-        public Mesh(Triangle[] triangles, Point3[] Vertices)
+        public Mesh(Triangle[] triangles, Point3[] vertices)
         {
             Triangles = triangles;
-            Vertices = Vertices;
+            Vertices = vertices;
         }
 
         /// <summary>
