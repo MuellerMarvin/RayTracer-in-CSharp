@@ -42,12 +42,27 @@ namespace PerformanceReporter
                 MaxBounces = 12
             };
 
+            long[] frameTimes = new long[runs];
+
             for (int i = 0; i < runs; i++)
             {
                 raytracer.RenderScene(camera, out long frameTime);
 
+                frameTimes[i] = frameTime;
+
                 Console.WriteLine("Run {0} | Time: {1} | Time Per Pixel: {2}", i, frameTime, (double)frameTime / (double)(xRes * yRes));
             }
+
+            Console.WriteLine("------------------------------------------------------------------");
+            Console.WriteLine("Total Runs: {0}\nResolution: {1}x{2}", runs, xRes, yRes);
+            Console.WriteLine("------------------------------------------------------------------");
+
+            long sum = 0;
+            Array.ForEach(frameTimes, i => sum += i);
+            Console.WriteLine("Total frametime:        {0} ms", sum);
+            Console.WriteLine("Average frametime:      {0} ms", sum / runs);
+            Console.WriteLine("Average time per pixel: {0} ms", (double)sum / (double)runs / (double)(xRes * yRes));
+            Console.WriteLine("------------------------------------------------------------------");
         }
     }
 }
