@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Library</OutputType>
 	  <TargetFramework>net5.0</TargetFramework>
-    <RootNamespace>RayTracer_in_CSharp</RootNamespace>
+    <RootNamespace>Raytracing</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
