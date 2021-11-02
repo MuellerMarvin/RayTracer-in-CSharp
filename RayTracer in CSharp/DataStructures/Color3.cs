@@ -27,6 +27,11 @@ namespace Raytracing.DataStructures
             return new Color3(color.R * multiplier, color.G * multiplier, color.B * multiplier);
         }
 
+        public static Color3 FromRgb(double r, double g, double b)
+        {
+            return new Color3(r / 255, g / 255, b / 255);
+        }
+
         public static Color3 operator *(Color3 color, double multiplier)
         {
             return new Color3(color.R * multiplier, color.G * multiplier, color.B * multiplier);
