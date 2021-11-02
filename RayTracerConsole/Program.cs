@@ -14,10 +14,10 @@ namespace RayTracerConsole
         {
             bool writeDebugInfo = false;
 
-            IMaterial groundMaterial = new LambertianDiffuse(new Color3(0.8, 0.8, 0));
-            IMaterial rightMaterial = new Metal(new Color3(0.8, 0.8, 0.8));
+            IMaterial groundMaterial = new LambertianDiffuse(Color3.FromRgb(255, 212, 216));
+            IMaterial rightMaterial = new Metal(Color3.FromRgb(220, 220, 220));
             IMaterial leftMaterial = new Dielectric(1.5);
-            IMaterial centerMaterial = new LambertianDiffuse(new Color3(0.8,0.6,0.2));
+            IMaterial centerMaterial = new LambertianDiffuse(Color3.FromRgb(222, 133, 255));
 
             Renderer renderer = new()
             {
