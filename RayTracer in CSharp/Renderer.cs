@@ -168,29 +168,30 @@ namespace Raytracing
             return normals;
         }
 
-        private Color4 RenderPixel(double x, double y, Camera camera, HittableList hittableObject)
+
+        private Color4 RenderPixel(double x, double y, Camera camera, HittableList hittables)
         {
             Color4 pixelColor = new(0, 0, 0, 0);
             for (int i = 0; i < camera.SamplesPerPixel; i++)
             {
-                pixelColor += GetRayColor(camera.GetRay(x + (RanGen.Value.NextDouble() * 2 - 1), y + (RanGen.Value.NextDouble() * 2 - 1)), hittableObject, camera.TransparentBackground, camera.MaxBounces);
+                pixelColor += GetRayColor(camera.GetRay(x + (RanGen.Value.NextDouble() * 2 - 1), y + (RanGen.Value.NextDouble() * 2 - 1)), hittables, camera.TransparentBackground, camera.MaxBounces);
             }
 
             return pixelColor / camera.SamplesPerPixel;
         }
 
-        private Color4 GetRayColor(Ray ray, HittableList hittableObjects, bool transparentBackground, int maxBounces)
+        private Color4 GetRayColor(Ray ray, HittableList hittables, bool transparentBackground, int maxBounces)
         {
             if (maxBounces < 0)
                 return new Color4(0, 0, 0, 1);
 
             Color4 pixelColor = new(0, 0, 0, 0);
             // check if an object is hit
-            if (hittableObjects.Hit(ray, 0.001, double.PositiveInfinity, out HitRecord hitRecord))
+            if (hittables.Hit(ray, 0.001, double.PositiveInfinity, out HitRecord hitRecord))
             {
                 // check if this ray will scatter
                 if (hitRecord.Material.Scatter(ray, hitRecord, out Color3 attenuation, out Ray scatteredRay))
-                    return new Color4(attenuation, 1) * GetRayColor(scatteredRay, hittableObjects, transparentBackground, maxBounces - 1);
+                    return new Color4(attenuation, 1) * GetRayColor(scatteredRay, hittables, transparentBackground, maxBounces - 1);
             }
             // transparent background
             else if (!transparentBackground)
