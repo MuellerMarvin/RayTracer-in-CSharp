@@ -9,15 +9,33 @@ namespace Raytracing.SelfMesh
 {
     public class Mesh : IHittable
     {
-        public Point3 Origin { get; set; } = new Point3(0, 0, 0);
+        private Point3 _Origin = new Point3(0, 0, 0);
+        public Point3 Origin {
+            get
+            {
+                return _Origin;
+            }
+            set
+            {
+                _Origin = value;
+                RejectionSphere.Origin = value;
+            }
+        }
         public Triangle[] Triangles { get; private set; }
         public Point3[] Vertices { get; private set; }
         public Materials.IMaterial Material { get; set; }
+        public Sphere RejectionSphere { get; private set; }
 
         public Mesh(Triangle[] triangles, Point3[] vertices)
         {
             Triangles = triangles;
             Vertices = vertices;
+        }
+
+        public void OverwriteRejectionSphere(Sphere sphere)
+        {
+            sphere.Origin = this.Origin;
+            RejectionSphere = sphere;
         }
 
         /// <summary>
