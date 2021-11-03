@@ -174,7 +174,18 @@ namespace Raytracing
             Color4 pixelColor = new(0, 0, 0, 0);
             for (int i = 0; i < camera.SamplesPerPixel; i++)
             {
-                pixelColor += GetRayColor(camera.GetRay(x + (RanGen.Value.NextDouble() * 2 - 1), y + (RanGen.Value.NextDouble() * 2 - 1)), hittables, camera.TransparentBackground, camera.MaxBounces);
+                pixelColor += RenderRay(camera.GetRay(x + (RanGen.Value.NextDouble() * 2 - 1), y + (RanGen.Value.NextDouble() * 2 - 1)), camera, this.HittableObjects);
+            }
+
+            return pixelColor / camera.SamplesPerPixel;
+        }
+
+        private Color4 RenderRay(Ray ray, Camera camera, HittableList hittables)
+        {
+            Color4 pixelColor = new(0, 0, 0, 0);
+            for (int i = 0; i < camera.SamplesPerPixel; i++)
+            {
+                pixelColor += GetRayColor(ray, hittables, camera.TransparentBackground, camera.MaxBounces);
             }
 
             return pixelColor / camera.SamplesPerPixel;
