@@ -22,10 +22,6 @@ namespace Raytracing
         #endregion
         #endregion
 
-        #region Events
-        public delegate void PixelRenderedHandler(Color4 color, int x, int y);
-        #endregion
-
         #region Constructors
         public Renderer()
         {
