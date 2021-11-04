@@ -165,18 +165,18 @@ namespace Raytracing
         }
 
 
-        private Color4 RenderPixel(double x, double y, Camera camera, HittableList hittables)
+        static public Color4 RenderPixel(double x, double y, Camera camera, HittableList hittables)
         {
             Color4 pixelColor = new(0, 0, 0, 0);
             for (int i = 0; i < camera.SamplesPerPixel; i++)
             {
-                pixelColor += RenderRay(camera.GetRay(x + (RanGen.Value.NextDouble() * 2 - 1), y + (RanGen.Value.NextDouble() * 2 - 1)), camera, this.HittableObjects);
+                pixelColor += RenderRay(camera.GetRay(x + (RanGen.Value.NextDouble() * 2 - 1), y + (RanGen.Value.NextDouble() * 2 - 1)), camera, hittables);
             }
 
             return pixelColor / camera.SamplesPerPixel;
         }
 
-        private Color4 RenderRay(Ray ray, Camera camera, HittableList hittables)
+        static public Color4 RenderRay(Ray ray, Camera camera, HittableList hittables)
         {
             Color4 pixelColor = new(0, 0, 0, 0);
             for (int i = 0; i < camera.SamplesPerPixel; i++)
@@ -187,7 +187,7 @@ namespace Raytracing
             return pixelColor / camera.SamplesPerPixel;
         }
 
-        private Color4 GetRayColor(Ray ray, HittableList hittables, bool transparentBackground, int maxBounces)
+         static public Color4 GetRayColor(Ray ray, HittableList hittables, bool transparentBackground, int maxBounces)
         {
             if (maxBounces < 0)
                 return new Color4(0, 0, 0, 1);
