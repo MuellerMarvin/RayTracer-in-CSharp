@@ -10,5 +10,19 @@ namespace Raytracing.DataStructures
     {
         public int X { get; set; }
         public int Y { get; set; }
+        public int Pixels
+        {
+            get
+            {
+                return X * Y;
+            }
+        }
+        // TODO: Aspect Ratio
+
+        public Resolution(int x, int y)
+        {
+            this.X = x;
+            this.Y = y;
+        }
     }
 }
