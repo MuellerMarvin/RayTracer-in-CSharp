@@ -17,7 +17,13 @@ namespace Raytracing.DataStructures
                 return X * Y;
             }
         }
-        // TODO: Aspect Ratio
+        public double AspectRatio
+        {
+            get
+            {
+                return (double)this.X / (double)this.Y;
+            }
+        }
 
         public Resolution(int x, int y)
         {
