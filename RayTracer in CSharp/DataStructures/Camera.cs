@@ -8,26 +8,6 @@ namespace Raytracing.DataStructures
     {
         #region Properties
 
-        #region Resolution
-        /// <summary>
-        /// The width of the image in pixels
-        /// </summary>
-        public int ResolutionWidth { get; set; }
-        /// <summary>
-        /// The height of the image in pixels
-        /// </summary>
-        public int ResolutionHeight { get; set; }
-        /// <summary>
-        /// ResolutionWidth / Resolution Height
-        /// </summary>
-        public double AspectRatio
-        {
-            get
-            {
-                return (double)this.ResolutionWidth / (double)this.ResolutionHeight;
-            }
-        }
-        #endregion
 
         #region Viewport and camera
 
@@ -49,7 +29,7 @@ namespace Raytracing.DataStructures
         {
             get
             {
-                return this.AspectRatio * this.ViewportHeight;
+                return this.Resolution.AspectRatio * this.ViewportHeight;
             }
         }
         /// <summary>
@@ -100,26 +80,26 @@ namespace Raytracing.DataStructures
         #endregion
 
         #region Render Config
-        public bool TransparentBackground { get; set; }
-        public int SamplesPerPixel { get; set; } = 10;
-        public int MaxBounces { get; set; } = 50;
+        public Resolution Resolution { get; set; }
+        public bool TransparentBackground { get; set; } = false;
+        public int SamplesPerPixel { get; set; } = 64;
+        public int MaxBounces { get; set; } = 12;
         public bool MultithreadedRendering { get; set; } = true;
         #endregion
 
         #endregion
 
         #region Functions
-        public Camera(int resolutionWidth, int resolutionHeight)
+        public Camera(int xResolution, int yResolution)
         {
-            this.ResolutionWidth = resolutionWidth;
-            this.ResolutionHeight = resolutionHeight;
+            this.Resolution = new Resolution(xResolution, yResolution);
             this.ViewportHeight = 2;
         }
 
         public Ray GetRay(double posX, double posY)
         {
-            double u = (posX / (this.ResolutionWidth - 1));
-            double v = (posY / (this.ResolutionHeight - 1));
+            double u = (posX / (this.Resolution.X - 1));
+            double v = (posY / (this.Resolution.Y - 1));
             return new Ray(this.Origin, this.LowerUpperCorner + u * this.ViewportHorizontal + v * this.ViewportVertical - this.Origin);
         }
         #endregion
