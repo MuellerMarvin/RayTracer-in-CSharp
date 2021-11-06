@@ -85,6 +85,8 @@ namespace Raytracing.DataStructures
         public int SamplesPerPixel { get; set; } = 64;
         public int MaxBounces { get; set; } = 12;
         public bool MultithreadedRendering { get; set; } = true;
+        public int TileHeight { get; set; }
+        public int TileWidth { get; set; }
         #endregion
 
         #endregion

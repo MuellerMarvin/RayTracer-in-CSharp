@@ -12,9 +12,15 @@ using Raytracing.SelfMesh;
 
 namespace Raytracing.Rendering
 {
-    class RenderEngine
+    public class RenderEngine
     {
         Camera Camera { get; set; }
+        HittableList Hittables { get; set; }
 
+        public RenderEngine(Camera camera, HittableList hittables)
+        {
+            this.Camera = camera;
+            this.Hittables = hittables;
+        }
     }
 }
