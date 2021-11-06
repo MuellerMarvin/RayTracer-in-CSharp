@@ -170,29 +170,17 @@ namespace Raytracing
             Color4 pixelColor = new(0, 0, 0, 0);
             for (int i = 0; i < camera.SamplesPerPixel; i++)
             {
-                pixelColor += RenderRay(camera.GetRay(x + (RanGen.Value.NextDouble() * 2 - 1), y + (RanGen.Value.NextDouble() * 2 - 1)), camera, hittables);
+                pixelColor += GetRayColor(camera.GetRay(x + (RanGen.Value.NextDouble() * 2 - 1), y + (RanGen.Value.NextDouble() * 2 - 1)), hittables, camera.TransparentBackground, camera.MaxBounces);
             }
 
             return pixelColor / camera.SamplesPerPixel;
         }
 
-        static public Color4 RenderRay(Ray ray, Camera camera, HittableList hittables)
-        {
-            Color4 pixelColor = new(0, 0, 0, 0);
-            for (int i = 0; i < camera.SamplesPerPixel; i++)
-            {
-                pixelColor += GetRayColor(ray, hittables, camera.TransparentBackground, camera.MaxBounces);
-            }
-
-            return pixelColor / camera.SamplesPerPixel;
-        }
-
-         static public Color4 GetRayColor(Ray ray, HittableList hittables, bool transparentBackground, int maxBounces)
+        static public Color4 GetRayColor(Ray ray, HittableList hittables, bool transparentBackground, int maxBounces)
         {
             if (maxBounces < 0)
                 return new Color4(0, 0, 0, 1);
 
-            Color4 pixelColor = new(0, 0, 0, 0);
             // check if an object is hit
             if (hittables.Hit(ray, 0.001, double.PositiveInfinity, out HitRecord hitRecord))
             {
@@ -205,11 +193,12 @@ namespace Raytracing
             {
                 // draw a background
                 double zPos = 0.5 * (ray.Direction.UnitVector.Z + 1);
-                pixelColor = (1 - zPos) * new Color4(1, 1, 1, 1) + zPos * new Color4(0.5, 0.7, 1.0, 1);
+                Color4 pixelColor = (1 - zPos) * new Color4(1, 1, 1, 1) + zPos * new Color4(0.5, 0.7, 1.0, 1);
                 pixelColor.A = 1;
+                return pixelColor;
             }
-            // else
-            return pixelColor;
+            // return transparent backgrouns
+            return new Color4(0, 0, 0, 0);
         }
 
         #endregion
