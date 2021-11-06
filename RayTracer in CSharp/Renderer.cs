@@ -62,14 +62,14 @@ namespace Raytracing
         private Color4[] RenderSceneSingleThreaded(Camera camera)
         {
             // set up buffer
-            Color4[] frameBuffer = new Color4[camera.ResolutionHeight * camera.ResolutionWidth];
+            Color4[] frameBuffer = new Color4[camera.Resolution.Y * camera.Resolution.X];
 
             // Create tasks that return the final color of a pixel
-            for (int y = camera.ResolutionHeight - 1; y >= 0; --y)
+            for (int y = camera.Resolution.Y - 1; y >= 0; --y)
             {
-                for (int x = 0; x < camera.ResolutionWidth; ++x)
+                for (int x = 0; x < camera.Resolution.X; ++x)
                 {
-                    frameBuffer[y * camera.ResolutionWidth + x] = RenderPixel(x, y, camera, this.HittableObjects);
+                    frameBuffer[y * camera.Resolution.X + x] = RenderPixel(x, y, camera, this.HittableObjects);
                 }
             }
             return frameBuffer;
@@ -78,17 +78,17 @@ namespace Raytracing
         private Color4[] RenderSceneMultithreaded(Camera camera)
         {
             // set up 
-            Color4[] pixels = new Color4[camera.ResolutionHeight * camera.ResolutionWidth];
-            Task<Color4>[] tasks = new Task<Color4>[camera.ResolutionHeight * camera.ResolutionWidth];
+            Color4[] pixels = new Color4[camera.Resolution.Y * camera.Resolution.X];
+            Task<Color4>[] tasks = new Task<Color4>[camera.Resolution.Y * camera.Resolution.X];
 
             // Create tasks that return the final color of a pixel
-            for (int y = camera.ResolutionHeight - 1; y >= 0; --y)
+            for (int y = camera.Resolution.Y - 1; y >= 0; --y)
             {
-                for (int x = 0; x < camera.ResolutionWidth; ++x)
+                for (int x = 0; x < camera.Resolution.X; ++x)
                 {
                     var _x = x;
                     var _y = y;
-                    tasks[y * camera.ResolutionWidth + x] = Task<Color4>.Run(() =>
+                    tasks[y * camera.Resolution.X + x] = Task<Color4>.Run(() =>
                     {
                         return RenderPixel(_x, _y, camera, this.HittableObjects);
                     });
@@ -106,11 +106,11 @@ namespace Raytracing
         
         public Color4[] RenderDepthMap(double maxDist, Camera camera)
         {
-            Color4[] depthMap = new Color4[camera.ResolutionHeight * camera.ResolutionWidth];
+            Color4[] depthMap = new Color4[camera.Resolution.Y * camera.Resolution.X];
 
-            for (int y = camera.ResolutionHeight - 1; y >= 0; --y)
+            for (int y = camera.Resolution.Y - 1; y >= 0; --y)
             {
-                for (int x = 0; x < camera.ResolutionWidth; ++x)
+                for (int x = 0; x < camera.Resolution.X; ++x)
                 {
                     // get the distance
                     double distance = GetDistanceOnPixel(x, y, camera);
@@ -121,7 +121,7 @@ namespace Raytracing
                     // scale it to fit the DepthMap (0 - 1)
                     int brightness = (int)Scale(distance, 0, maxDist, 0, 1);
 
-                    depthMap[y * camera.ResolutionWidth + x] = new Color4(brightness, brightness, brightness, 1);
+                    depthMap[y * camera.Resolution.X + x] = new Color4(brightness, brightness, brightness, 1);
                 }
             }
 
@@ -142,11 +142,11 @@ namespace Raytracing
 
         public Color4[] RenderNormals(Camera camera)
         {
-            Color4[] normals = new Color4[camera.ResolutionHeight * camera.ResolutionWidth];
+            Color4[] normals = new Color4[camera.Resolution.Y * camera.Resolution.X];
 
-            for (int y = camera.ResolutionHeight - 1; y >= 0; --y)
+            for (int y = camera.Resolution.Y - 1; y >= 0; --y)
             {
-                for (int x = 0; x < camera.ResolutionWidth; ++x)
+                for (int x = 0; x < camera.Resolution.X; ++x)
                 {
 
                     Color4 pixel = new(1, 1, 1, 1);
@@ -157,7 +157,7 @@ namespace Raytracing
                         pixel = new Color4(vector.X, vector.Y, vector.Z, 1);
                     }
 
-                    normals[y * camera.ResolutionWidth + x] = pixel;
+                    normals[y * camera.Resolution.X + x] = pixel;
                 }
             }
 
@@ -204,18 +204,18 @@ namespace Raytracing
         #endregion
 
         #region Write Functions
-        public static void WriteFrame(string filePath, Color4[] pixels, int height, int width, ImageFormat format, bool writeDebugInfo, long frameTime, Camera camera)
+        public static void WriteFrame(string filePath, Color4[] pixels, int Y, int X, ImageFormat format, bool writeDebugInfo, long frameTime, Camera camera)
         {
-            Bitmap bitmap = ColorArrayToBitmap(width, height, pixels);
+            Bitmap bitmap = ColorArrayToBitmap(X, Y, pixels);
 
             if (writeDebugInfo)
             {
                 string debugString = "Frametime: " + frameTime + " ms";
-                debugString += " | Res: " + width + "x" + height + " | " + camera.SamplesPerPixel + " Samples/Pixel | " + camera.MaxBounces + " Max Bounces";
+                debugString += " | Res: " + X + "x" + Y + " | " + camera.SamplesPerPixel + " Samples/Pixel | " + camera.MaxBounces + " Max Bounces";
 
                 Graphics g = Graphics.FromImage(bitmap);
                 g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
-                g.DrawString(debugString, new Font("Tahoma", 8), Brushes.White, new PointF(5, height - 15));
+                g.DrawString(debugString, new Font("Tahoma", 8), Brushes.White, new PointF(5, Y - 15));
             }
 
             bitmap.Save(filePath, format);
