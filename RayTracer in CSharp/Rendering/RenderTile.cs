@@ -15,41 +15,48 @@ namespace Raytracing.Rendering
     {
         public RenderSpace RenderSpace { get; private set; }
         public Color4[] Pixels { get; set; }
+        public Camera Camera { get; set; }
+        public HittableList Hittables { get; set; }
 
         private static readonly ThreadLocal<Random> RanGen = new(() => new Random(Guid.NewGuid().GetHashCode()));
 
-        public RenderTile(RenderSpace renderSpace)
+        public RenderTile(RenderSpace renderSpace, ref Camera camera, ref HittableList hittable)
         {
             this.RenderSpace = renderSpace;
             Pixels = new Color4[RenderSpace.PixelCount];
         }
 
-        public void Render(HittableList hittables, Camera camera)
+        public static void Render(RenderTile tile)
         {
             // populate pixels
-            for (int i = 0; i < Pixels.Length; i++)
+            tile.Pixels = new Color4[tile.RenderSpace.PixelCount];
+            for (int i = 0; i < tile.Pixels.Length; i++)
             {
-                Pixels[i] = new Color4(0, 0, 0, 0);
+                tile.Pixels[i] = new Color4(0, 0, 0, 0);
             }
 
-            int p = 0;
-            for (int y = this.RenderSpace.StartY; y < this.RenderSpace.EndY; y++)
+            for (int s = 0; s < tile.Camera.SamplesPerPixel; s++)
             {
-                for (int x = this.RenderSpace.StartX; x < this.RenderSpace.EndX; x++)
+                int p = 0;
+                for (int x = tile.RenderSpace.StartX; x < tile.RenderSpace.EndX; x++)
                 {
-                    Pixels[p] += Renderer.GetRayColor(camera.GetRay(x + (RanGen.Value.NextDouble() * 2 - 1), y + (RanGen.Value.NextDouble() * 2 - 1)), hittables, camera.TransparentBackground, camera.MaxBounces);
-                    p++;
+                    for (int y = tile.RenderSpace.StartY; y < tile.RenderSpace.EndY; y++)
+                    {
+                        tile.Pixels[p] += Renderer.GetRayColor(tile.Camera.GetRay(x + (RanGen.Value.NextDouble() * 2 - 1), y + (RanGen.Value.NextDouble() * 2 - 1)), tile.Hittables, tile.Camera.TransparentBackground, tile.Camera.MaxBounces);
+                        p++;
+                    }
                 }
             }
 
             // divide by samples
-            for (int i = 0; i < camera.SamplesPerPixel; i++)
+            for (int i = 0; i < tile.Pixels.Length; i++)
             {
-                Pixels[i] = Pixels[i] / camera.SamplesPerPixel;
+                tile.Pixels[i] = tile.Pixels[i] / tile.Camera.SamplesPerPixel;
             }
         }
 
-        public static RenderTile[] CreateTiles(Camera camera)
+
+        public static RenderTile[] CreateTiles(Camera camera, HittableList hittables)
         {
             List<RenderTile> renderTiles = new List<RenderTile>();
 
@@ -63,7 +70,7 @@ namespace Raytracing.Rendering
                     int tileHeight = (y + camera.TileHeight) > camera.Resolution.Y ? camera.Resolution.Y : (y + camera.TileHeight);
 
                     //create tile
-                    renderTiles.Add(new RenderTile(new RenderSpace(x, tileWidth, y, tileHeight))); // something is really wrong here
+                    renderTiles.Add(new RenderTile(new RenderSpace(x, tileWidth, y, tileHeight), ref camera, ref hittables)); // something is really wrong here
                 }
             }
 
