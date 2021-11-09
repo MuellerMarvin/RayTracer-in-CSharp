@@ -20,38 +20,41 @@ namespace Raytracing.Rendering
 
         private static readonly ThreadLocal<Random> RanGen = new(() => new Random(Guid.NewGuid().GetHashCode()));
 
-        public RenderTile(RenderSpace renderSpace, ref Camera camera, ref HittableList hittable)
+        public RenderTile(RenderSpace renderSpace, ref Camera camera, ref HittableList hittables)
         {
             this.RenderSpace = renderSpace;
             Pixels = new Color4[RenderSpace.PixelCount];
+
+            this.Camera = camera;
+            this.Hittables = hittables;
         }
 
-        public static void Render(RenderTile tile)
+        public void Render()
         {
             // populate pixels
-            tile.Pixels = new Color4[tile.RenderSpace.PixelCount];
-            for (int i = 0; i < tile.Pixels.Length; i++)
+            this.Pixels = new Color4[this.RenderSpace.PixelCount];
+            for (int i = 0; i < this.Pixels.Length; i++)
             {
-                tile.Pixels[i] = new Color4(0, 0, 0, 0);
+                this.Pixels[i] = new Color4(0, 0, 0, 0);
             }
 
-            for (int s = 0; s < tile.Camera.SamplesPerPixel; s++)
+            for (int s = 0; s < this.Camera.SamplesPerPixel; s++)
             {
                 int p = 0;
-                for (int x = tile.RenderSpace.StartX; x < tile.RenderSpace.EndX; x++)
+                for (int x = this.RenderSpace.StartX; x < this.RenderSpace.EndX; x++)
                 {
-                    for (int y = tile.RenderSpace.StartY; y < tile.RenderSpace.EndY; y++)
+                    for (int y = this.RenderSpace.StartY; y < this.RenderSpace.EndY; y++)
                     {
-                        tile.Pixels[p] += Renderer.GetRayColor(tile.Camera.GetRay(x + (RanGen.Value.NextDouble() * 2 - 1), y + (RanGen.Value.NextDouble() * 2 - 1)), tile.Hittables, tile.Camera.TransparentBackground, tile.Camera.MaxBounces);
+                        this.Pixels[p] += Renderer.GetRayColor(this.Camera.GetRay(x + (RanGen.Value.NextDouble() * 2 - 1), y + (RanGen.Value.NextDouble() * 2 - 1)), this.Hittables, this.Camera.TransparentBackground, this.Camera.MaxBounces);
                         p++;
                     }
                 }
             }
 
             // divide by samples
-            for (int i = 0; i < tile.Pixels.Length; i++)
+            for (int i = 0; i < this.Pixels.Length; i++)
             {
-                tile.Pixels[i] = tile.Pixels[i] / tile.Camera.SamplesPerPixel;
+                this.Pixels[i] = this.Pixels[i] / this.Camera.SamplesPerPixel;
             }
         }
 
