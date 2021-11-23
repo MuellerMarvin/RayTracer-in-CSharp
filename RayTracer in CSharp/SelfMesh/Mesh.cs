@@ -18,7 +18,7 @@ namespace Raytracing.SelfMesh
             set
             {
                 _Origin = value;
-                // RejectionSphere.Origin = value; not implemented yet - would cause a crash due to the rejectionsphere not being assigned
+                RejectionSphere.Origin = value;
             }
         }
         public Triangle[] Triangles { get; private set; }
@@ -150,8 +150,8 @@ namespace Raytracing.SelfMesh
             hitRecord.Distance = double.MaxValue;
             hitRecord.Material = this.Material;
 
-            if(this.RejectionSphere.Hit(ray, minDist, maxDist, out HitRecord rejectionRecord))
-            {
+            //if(this.RejectionSphere.Hit(ray, minDist, maxDist, out HitRecord rejectionRecord))
+            //{
                 for (int i = 0; i < Triangles.Length; i++)
                 {
                     // hit it
@@ -165,7 +165,7 @@ namespace Raytracing.SelfMesh
                             hitRecord = currentRecord;
                     }
                 }
-            }
+            //}
             return hit;
         }
     }
