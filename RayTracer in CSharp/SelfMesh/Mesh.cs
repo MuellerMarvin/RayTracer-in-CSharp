@@ -18,7 +18,7 @@ namespace Raytracing.SelfMesh
             set
             {
                 _Origin = value;
-                RejectionSphere.Origin = value;
+                // RejectionSphere.Origin = value; not implemented yet - would cause a crash due to the rejectionsphere not being assigned
             }
         }
         public Triangle[] Triangles { get; private set; }
