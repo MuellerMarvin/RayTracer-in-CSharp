@@ -38,7 +38,7 @@ namespace Raytracing.SelfMesh
         public void UpdateRejectionsphere()
         {
             Sphere rs = new Sphere(this.Origin, 0, this.Material);
-            this.Origin = rs.Origin;
+            rs.Origin = this.Origin;
 
             double maxLength = 0;
 
@@ -51,6 +51,8 @@ namespace Raytracing.SelfMesh
             }
 
             rs.Radius = maxLength;
+
+            this.RejectionSphere = rs;
         }
 
         public void OverwriteRejectionSphere(Sphere sphere)
@@ -150,8 +152,8 @@ namespace Raytracing.SelfMesh
             hitRecord.Distance = double.MaxValue;
             hitRecord.Material = this.Material;
 
-            //if(this.RejectionSphere.Hit(ray, minDist, maxDist, out HitRecord rejectionRecord))
-            //{
+            if(this.RejectionSphere.Hit(ray, minDist, maxDist, out HitRecord rejectionRecord))
+            {
                 for (int i = 0; i < Triangles.Length; i++)
                 {
                     // hit it
@@ -165,7 +167,7 @@ namespace Raytracing.SelfMesh
                             hitRecord = currentRecord;
                     }
                 }
-            //}
+            }
             return hit;
         }
     }
