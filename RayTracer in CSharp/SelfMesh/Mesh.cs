@@ -30,6 +30,27 @@ namespace Raytracing.SelfMesh
         {
             Triangles = triangles;
             Vertices = vertices;
+
+            // Set rejectionsphere
+            this.UpdateRejectionsphere();
+        }
+
+        public void UpdateRejectionsphere()
+        {
+            Sphere rs = new Sphere();
+            this.Origin = rs.Origin;
+
+            double maxLength = 0;
+
+            for (int i = 0; i < this.Vertices.Length; i++)
+            {
+                if (((Vector3)this.Vertices[i]).Length > maxLength)
+                {
+                    maxLength = ((Vector3)this.Vertices[i]).Length;
+                }
+            }
+
+            rs.Radius = maxLength;
         }
 
         public void OverwriteRejectionSphere(Sphere sphere)
@@ -127,23 +148,24 @@ namespace Raytracing.SelfMesh
             bool hit = false;
             hitRecord = new();
             hitRecord.Distance = double.MaxValue;
-
-            for (int i = 0; i < Triangles.Length; i++)
-            {
-                // hit it
-                if(Triangles[i].Hit(ray, minDist, maxDist, out HitRecord currentRecord, this.Origin))
-                {
-                    // if it hit, say so
-                    hit = true;
-
-                    // if its the lowest distance yet, save it
-                    if (currentRecord.Distance < hitRecord.Distance)
-                        hitRecord = currentRecord;
-                }
-            }
-
             hitRecord.Material = this.Material;
 
+            if(this.RejectionSphere.Hit(ray, minDist, maxDist, out HitRecord rejectionRecord))
+            {
+                for (int i = 0; i < Triangles.Length; i++)
+                {
+                    // hit it
+                    if (Triangles[i].Hit(ray, minDist, maxDist, out HitRecord currentRecord, this.Origin))
+                    {
+                        // if it hit, say so
+                        hit = true;
+
+                        // if its the lowest distance yet, save it
+                        if (currentRecord.Distance < hitRecord.Distance)
+                            hitRecord = currentRecord;
+                    }
+                }
+            }
             return hit;
         }
     }
