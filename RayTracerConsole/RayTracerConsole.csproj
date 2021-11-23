@@ -15,4 +15,10 @@
     <ProjectReference Include="..\RayTracer in CSharp\RayTracer in CSharp.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="suzanne.obj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
