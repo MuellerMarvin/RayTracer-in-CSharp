@@ -37,7 +37,7 @@ namespace Raytracing.SelfMesh
 
         public void UpdateRejectionsphere()
         {
-            Sphere rs = new Sphere();
+            Sphere rs = new Sphere(this.Origin, 0, this.Material);
             this.Origin = rs.Origin;
 
             double maxLength = 0;
