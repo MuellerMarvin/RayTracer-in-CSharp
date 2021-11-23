@@ -18,7 +18,7 @@ namespace Raytracing.SelfMesh
             set
             {
                 _Origin = value;
-                RejectionSphere.Origin = value;
+                // RejectionSphere.Origin = value; not implemented yet - would cause a crash due to the rejectionsphere not being assigned
             }
         }
         public Triangle[] Triangles { get; private set; }
@@ -37,7 +37,7 @@ namespace Raytracing.SelfMesh
 
         public void UpdateRejectionsphere()
         {
-            Sphere rs = new Sphere();
+            Sphere rs = new Sphere(this.Origin, 0, this.Material);
             this.Origin = rs.Origin;
 
             double maxLength = 0;
