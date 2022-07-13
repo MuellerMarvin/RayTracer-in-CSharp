@@ -48,7 +48,7 @@ namespace RayTracerConsole
 
             // Write to disk
             System.IO.Directory.CreateDirectory("./images/");
-            Renderer.WriteFrame("./images/image_" + result.frameNumber + ".png", result.pixels, result.camera.ResolutionHeight, result.camera.ResolutionWidth, ImageFormat.Png, writeDebugInfo, result.frameTime, result.camera);
+            Renderer.WriteFrame("./images/image_" + result.frameNumber + ".png", result.pixels, result.camera.Resolution.X, result.camera.Resolution.X, ImageFormat.Png, writeDebugInfo, result.frameTime, result.camera);
         }
     }
 
