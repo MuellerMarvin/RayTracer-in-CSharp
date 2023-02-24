@@ -354,3 +354,6 @@ MigrationBackup/
 
 # Image output folder
 images/
+
+#DS Store files
+.DS_Store
