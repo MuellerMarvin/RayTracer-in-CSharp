@@ -221,6 +221,25 @@ namespace Raytracing
             bitmap.Save(filePath, format);
         }
 
+        public static void WriteFramePpm(string filepath, Color4[] pixels, int Y, int X, bool writeDebugInfo, long frameTime, Camera camera) {
+            System.IO.StreamWriter w = new System.IO.StreamWriter(filepath);
+
+            w.WriteLine("P3");
+            w.WriteLine("{0} {1} 255", X, Y);
+
+            for (int y = 0; y < Y; y++)
+            {
+                for (int x = 0; x < X; x++)
+                {
+                    Color4 pixel = pixels[y * X + x];
+
+                    w.Write("{0} {1} {2} ", Math.Round(pixel.R * 255), Math.Round(pixel.G * 255), Math.Round(pixel.B * 255));
+                }
+                w.Write('\n');
+            }
+            w.Flush();
+            w.Close();
+        }        
         public static Bitmap ColorArrayToBitmap(int xRes, int yRes, Color4[] pixels)
         {
             Bitmap bitmap = new(xRes, yRes, PixelFormat.Format32bppArgb);
