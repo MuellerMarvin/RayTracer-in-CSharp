@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Raytracing.Rendering
+namespace Raytracing
 {
     public class Rendering
     {
