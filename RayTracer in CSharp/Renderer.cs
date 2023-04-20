@@ -45,7 +45,7 @@ namespace Raytracing
             if (camera.MultithreadedRendering)
             {
                 sw.Start();
-                pixels = RenderSceneMultithreaded(camera);
+                pixels = RenderSceneMultithreaded(camera, this.HittableObjects);
                 sw.Stop();
                 frameTime = sw.ElapsedMilliseconds;
             }
@@ -75,7 +75,7 @@ namespace Raytracing
             return frameBuffer;
         }
 
-        private Color4[] RenderSceneMultithreaded(Camera camera)
+        private static Color4[] RenderSceneMultithreaded(Camera camera, HittableList hittables)
         {
             // set up 
             Color4[] pixels = new Color4[camera.Resolution.Y * camera.Resolution.X];
@@ -90,7 +90,7 @@ namespace Raytracing
                     var _y = y;
                     tasks[y * camera.Resolution.X + x] = Task<Color4>.Run(() =>
                     {
-                        return RenderPixel(_x, _y, camera, this.HittableObjects);
+                        return RenderPixel(_x, _y, camera, hittables);
                     });
                 }
             }
