@@ -59,7 +59,7 @@ namespace Raytracing
             return pixels;
         }
 
-        private Color4[] RenderSceneSingleThreaded(Camera camera)
+        private static Color4[] RenderSceneSingleThreaded(Camera camera, HittableList hittableObjects)
         {
             // set up buffer
             Color4[] frameBuffer = new Color4[camera.Resolution.Y * camera.Resolution.X];
@@ -69,7 +69,7 @@ namespace Raytracing
             {
                 for (int x = 0; x < camera.Resolution.X; ++x)
                 {
-                    frameBuffer[y * camera.Resolution.X + x] = RenderPixel(x, y, camera, this.HittableObjects);
+                    frameBuffer[y * camera.Resolution.X + x] = RenderPixel(x, y, camera, hittableObjects);
                 }
             }
             return frameBuffer;
@@ -104,7 +104,7 @@ namespace Raytracing
             return pixels;
         }
         
-        public Color4[] RenderDepthMap(double maxDist, Camera camera)
+        public static Color4[] RenderDepthMap(double maxDist, Camera camera)
         {
             Color4[] depthMap = new Color4[camera.Resolution.Y * camera.Resolution.X];
 
@@ -128,9 +128,9 @@ namespace Raytracing
             return depthMap;
         }
 
-        private double GetDistanceOnPixel(double x, double y, Camera camera)
+        public static double GetDistanceOnPixel(double x, double y, Camera camera, HittableList hittables)
         {
-            if (HittableObjects.Hit(camera.GetRay(x, y), 0, double.PositiveInfinity, out HitRecord hitRecord))
+            if (hittables.Hit(camera.GetRay(x, y), 0, double.PositiveInfinity, out HitRecord hitRecord))
             {
                 return hitRecord.Distance;
             }
