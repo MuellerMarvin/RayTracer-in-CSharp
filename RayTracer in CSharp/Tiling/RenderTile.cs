@@ -9,7 +9,7 @@ using Raytracing;
 using Raytracing.DataStructures;
 using Raytracing.Hittables;
 
-namespace Raytracing.Rendering
+namespace Raytracing.Tiling
 {
     public class RenderTile
     {
