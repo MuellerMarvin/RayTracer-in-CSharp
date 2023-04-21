@@ -45,7 +45,7 @@ namespace Raytracing.Tiling
                 {
                     for (int y = this.RenderSpace.StartY; y < this.RenderSpace.EndY; y++)
                     {
-                        this.Pixels[p] += Renderer.GetRayColor(this.Camera.GetRay(x + (RanGen.Value.NextDouble() * 2 - 1), y + (RanGen.Value.NextDouble() * 2 - 1)), this.Hittables, this.Camera.TransparentBackground, this.Camera.MaxBounces);
+                        this.Pixels[p] += Rendering.GetRayColor(this.Camera.GetRay(x + (RanGen.Value.NextDouble() * 2 - 1), y + (RanGen.Value.NextDouble() * 2 - 1)), this.Hittables, this.Camera.TransparentBackground, this.Camera.MaxBounces);
                         p++;
                     }
                 }

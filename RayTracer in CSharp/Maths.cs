@@ -1,8 +1,8 @@
 using System;
 
-namespace Raytracing
+namespace Raytracing.Maths
 {
-	public class Maths
+	public class MathHelpers
 	{
 		public static double Scale(double value, double min, double max, double minScaled, double maxScaled)
 		{

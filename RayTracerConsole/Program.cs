@@ -19,18 +19,6 @@ namespace RayTracerConsole
             IMaterial leftMaterial = new Dielectric(1.5);
             IMaterial centerMaterial = new LambertianDiffuse(Color3.FromRgb(222, 133, 255));
 
-            Renderer renderer = new()
-            {
-                // Define objects in the scene
-                HittableObjects = new HittableList
-                {
-                    new Sphere(new Vector3(0, 1, -100.5), 100, groundMaterial),
-                    new Sphere(new Vector3(0,1,0), 0.5, centerMaterial),
-                    new Sphere(new Vector3(-1,1,0), 0.5, leftMaterial),
-                    new Sphere(new Vector3(1, 1, 0), 0.5, rightMaterial),
-                }
-            };
-
             // Define the camera
             Camera camera = new(1280, 720)
             {
@@ -40,11 +28,20 @@ namespace RayTracerConsole
                 MaxBounces = 12
             };
 
+            // Define objects in the scene
+            HittableList hittables= new()
+            {
+                new Sphere(new Vector3(0, 1, -100.5), 100, groundMaterial),
+                new Sphere(new Vector3(0, 1, 0), 0.5, centerMaterial),
+                new Sphere(new Vector3(-1, 1, 0), 0.5, leftMaterial),
+                new Sphere(new Vector3(1, 1, 0), 0.5, rightMaterial),
+            };
+
             // Render
             RenderResult result = new();
             result.frameNumber = 0;
             result.camera = camera;
-            result.pixels = renderer.RenderScene(camera, out result.frameTime);
+            result.pixels = Rendering.RenderScene(camera, hittables, out result.frameTime);
 
             // Write to disk
             System.IO.Directory.CreateDirectory("./images/");
