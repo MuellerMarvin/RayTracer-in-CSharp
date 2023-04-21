@@ -20,7 +20,7 @@ namespace RayTracerConsole
             IMaterial centerMaterial = new LambertianDiffuse(Color3.FromRgb(222, 133, 255));
 
             // Define the camera
-            Camera camera = new(1280, 720)
+            Camera camera = new(100, 50)
             {
                 Origin = new Vector3(0, 0, 0),
                 MultithreadedRendering = true,
@@ -45,7 +45,7 @@ namespace RayTracerConsole
 
             // Write to disk
             System.IO.Directory.CreateDirectory("./images/");
-            Renderer.WriteFrame("./images/image_" + result.frameNumber + ".png", result.pixels, result.camera.Resolution.X, result.camera.Resolution.X, ImageFormat.Png, writeDebugInfo, result.frameTime, result.camera);
+            Renderer.WriteFrame("./images/image_" + result.frameNumber + ".png", result.pixels, result.camera.Resolution.Y, result.camera.Resolution.X, ImageFormat.Png, writeDebugInfo, result.frameTime, result.camera);
         }
     }
 
