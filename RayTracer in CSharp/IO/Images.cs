@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 
 using Raytracing.DataStructures;
-using Raytracing.Hittables;
 
-namespace Raytracing
+namespace Raytracing.IO
 {
-    public class Renderer
+    public class Images
     {
         public static void WriteFrame(string filePath, Color4[] pixels, int Y, int X, ImageFormat format, bool writeDebugInfo, long frameTime, Camera camera)
         {
@@ -29,7 +25,7 @@ namespace Raytracing
             bitmap.Save(filePath, format);
         }
 
-        public static Bitmap ColorArrayToBitmap(int xRes, int yRes, Color4[] pixels)
+        private static Bitmap ColorArrayToBitmap(int xRes, int yRes, Color4[] pixels)
         {
             Bitmap bitmap = new(xRes, yRes, PixelFormat.Format32bppArgb);
             for (int y = yRes - 1; y >= 0; y--)
@@ -44,4 +40,3 @@ namespace Raytracing
         }
     }
 }
- 
