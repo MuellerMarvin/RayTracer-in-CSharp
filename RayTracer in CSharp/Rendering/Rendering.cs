@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Raytracing.DataStructures;
 using Raytracing.Hittables;
 
-namespace Raytracing
+namespace Raytracing.Rendering
 {
     public class Rendering
     {
