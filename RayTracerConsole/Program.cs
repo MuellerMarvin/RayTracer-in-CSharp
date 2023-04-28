@@ -5,6 +5,7 @@ using Raytracing.DataStructures;
 using Raytracing.Hittables;
 using Raytracing.Materials;
 using Raytracing.IO;
+using Raytracing.Rendering;
 
 
 namespace RayTracerConsole
@@ -44,7 +45,7 @@ namespace RayTracerConsole
             RenderResult result = new();
             result.frameNumber = 0;
             result.camera = camera;
-            result.pixels = Rendering.RenderScene(camera, hittables, out result.frameTime);
+            result.pixels = RenderingFunctions.RenderScene(camera, hittables, out result.frameTime);
 
             // Write to disk
             System.IO.Directory.CreateDirectory("./images/");

@@ -8,12 +8,12 @@ using Raytracing.Hittables;
 
 namespace Raytracing.Rendering
 {
-    public class Rendering
+    public class RenderingFunctions
     {
         // ThreadLocal random generator
         private static readonly ThreadLocal<Random> RanGen = new(() => new Random(Guid.NewGuid().GetHashCode()));
 
-        public static Color4[] RenderScene(Camera camera, HittableList hittables)
+        public static Color4[] RenderSceneRenderScene(Camera camera, HittableList hittables)
         {
             #pragma warning disable IDE0059 // Unnecessary assignment of a value // prevents the error in user-code
             return RenderScene(camera, hittables, out long frametime);

@@ -45,7 +45,7 @@ namespace Raytracing.Tiling
                 {
                     for (int y = this.RenderSpace.StartY; y < this.RenderSpace.EndY; y++)
                     {
-                        this.Pixels[p] += Rendering.GetRayColor(this.Camera.GetRay(x + (RanGen.Value.NextDouble() * 2 - 1), y + (RanGen.Value.NextDouble() * 2 - 1)), this.Hittables, this.Camera.TransparentBackground, this.Camera.MaxBounces);
+                        this.Pixels[p] += Rendering.RenderingFunctions.GetRayColor(this.Camera.GetRay(x + (RanGen.Value.NextDouble() * 2 - 1), y + (RanGen.Value.NextDouble() * 2 - 1)), this.Hittables, this.Camera.TransparentBackground, this.Camera.MaxBounces);
                         p++;
                     }
                 }
@@ -107,13 +107,37 @@ namespace Raytracing.Tiling
 
     public struct RenderSpace
     {
-        public int StartX { get; private set; }
-        public int EndX { get; private set; }
-        public int StartY { get; private set; }
-        public int EndY { get; private set; }
-        public int SpaceWidth { get; private set; }
-        public int SpaceHeight { get; private set; }
-        public int PixelCount { get; private set; }
+        public int StartX { get; set; }
+        
+        public int EndX { get; set; }
+        
+        public int StartY { get; set; }
+        
+        public int EndY { get; set; }
+        
+        public int SpaceWidth
+        {
+            get
+            {
+                return (this.EndX - this.StartX);
+            }
+        }
+
+        public int SpaceHeight
+        {
+            get
+            {
+                return this.EndY - this.StartY;
+            }
+        }
+
+        public int PixelCount
+        {
+            get
+            {
+                return this.SpaceWidth * this.SpaceHeight
+            }
+        }
 
         public RenderSpace(int startX, int endX, int startY, int endY)
         {
@@ -121,10 +145,6 @@ namespace Raytracing.Tiling
             this.EndX = endX;
             this.StartY = startY;
             this.EndY = endY;
-            this.SpaceWidth = (endX - startX);
-            this.SpaceHeight = (endY - startY);
-            this.PixelCount =  this.SpaceWidth * this.SpaceHeight;
-
         }
     }
 }
