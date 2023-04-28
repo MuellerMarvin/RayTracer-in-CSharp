@@ -135,7 +135,7 @@ namespace Raytracing.Tiling
         {
             get
             {
-                return this.SpaceWidth * this.SpaceHeight
+                return this.SpaceWidth * this.SpaceHeight;
             }
         }
 
